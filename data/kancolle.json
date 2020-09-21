@@ -21,6 +21,11 @@
                 "linkType": "pixiv",
                 "link": "https://www.pixiv.net/en/artworks/80906721",
                 "artist": "organizer"
+            }, {
+                "isNsfw": 2,
+                "linkType": "pixiv",
+                "link": "https://www.pixiv.net/en/artworks/83708094",
+                "artist": "amog"
             }],
             "yayoi": [{
                 "isNsfw": 2,
