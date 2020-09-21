@@ -70,17 +70,16 @@ function createNodes(text) {
             }
             if (key == id) {
                 for (key2 in json.ships[key]) {
-                    if (allElems[key] === undefined) {
-                        allElems[key] = [];
+                    if (allElems[key2] === undefined) {
+                        allElems[key2] = [];
                     }
                     json.ships[key][key2].forEach(e => {
-                        allElems[key].push({link: e.link});
+                        allElems[key2].push({link: e.link});
                     });
                 }
             }
         }
         let str = "";
-        console.log(allElems);
         for (key in allElems) {
             str += toSentenceCase(key) + ":<br/>";
             allElems[key].forEach(e => {
