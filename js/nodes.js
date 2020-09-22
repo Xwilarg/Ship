@@ -92,6 +92,10 @@ function createNodes(text) {
                         str += '<a href="' + e.link + '" target="_blank"><img src="https://i.nhentai.net/galleries/' + e.imageId + '/1.jpg"/></a>';
                         break;
 
+                    case "twitter":
+                        str += '<a href="' + e.link + '" target="_blank"><img src="https://pbs.twimg.com/media/' + e.imageId + '?format=jpg&name=small"/></a>';
+                        break;
+
                     default:
                         console.error("Unknown link type: " + e.linkType);
                         str += '<a href="' + e.link + '" target="_blank">' + e.link + '</a>';
