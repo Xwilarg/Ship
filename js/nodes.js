@@ -92,7 +92,7 @@ function createNodes(text) {
 }
 
 let http = new XMLHttpRequest();
-http.open("GET", "https://raw.githubusercontent.com/Xwilarg/Ship/master/data/kancolle.json", false);
+http.open("GET", "https://raw.githubusercontent.com/Xwilarg/Ship_data/master/kancolle.json", false);
 http.onreadystatechange = function ()
 {
     if (this.readyState === 4 && this.status === 200) {
