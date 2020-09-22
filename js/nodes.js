@@ -103,7 +103,6 @@ function createNetwork() {
                 }
             }
         }
-
         for (key in crossoverJson.ships) {
             for (key2 in crossoverJson.ships[key]) {
                 if (key2 == id) {
@@ -132,7 +131,7 @@ function createNetwork() {
             if (key.includes("_"))
             {
                 let s = key.split("_");
-                str = "(" + toSentenceCase(s[0]) + ") " + toSentenceCase(s[1]) + ":<br/>";
+                str += "(" + toSentenceCase(s[0]) + ") " + toSentenceCase(s[1]) + ":<br/>";
             }
             else
                 str += toSentenceCase(key) + ":<br/>";
