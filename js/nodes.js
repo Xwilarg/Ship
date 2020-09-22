@@ -96,6 +96,10 @@ function createNodes(text) {
                         str += '<a href="' + e.link + '" target="_blank"><img src="https://pbs.twimg.com/media/' + e.imageId + '?format=jpg&name=small"/></a>';
                         break;
 
+                    case "gelbooru":
+                        str += '<a href="' + e.link + '" target="_blank"><img src="https://img2.gelbooru.com/images/' + e.imageId + '"/></a>';
+                        break;
+
                     default:
                         console.error("Unknown link type: " + e.linkType);
                         str += '<a href="' + e.link + '" target="_blank">' + e.link + '</a>';
