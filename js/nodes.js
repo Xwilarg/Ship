@@ -2,29 +2,33 @@ function toSentenceCase(str) {
     return str.slice(0, 1).toUpperCase() + str.slice(1, str.length)
 }
 
+let allIds = {};
+let arrNodes = [];
+let arrEdges = [];
+
+let allJsons = {};
+let crossoverJson;
+
+let i = 0;
+
 function createNodes(text) {
-    var json = JSON.parse(text);
+    let json = JSON.parse(text);
 
-    let allIds = {};
-    let arrNodes = [];
-    let arrEdges = [];
-
+    let name = json.name;
     let color = json.color;
-
-    let i = 0;
 
     // Add all characters to id list (+ draw nodes)
     for (key in json.ships) {
         arrNodes.push({ id: i, label: toSentenceCase(key), color: color });
-        allIds[key] = i;
+        allIds[name + "_" + key] = i;
         i++;
     }
 
     for (key in json.ships) {
         for (key2 in json.ships[key]) {
-            if (allIds[key2] === undefined) {
+            if (allIds[name + "_" + key2] === undefined) {
                 arrNodes.push({ id: i, label: toSentenceCase(key2), color: color });
-                allIds[key2] = i;
+                allIds[name + "_" + key2] = i;
                 i++;
             }
         }
@@ -33,11 +37,30 @@ function createNodes(text) {
     // Draw edges
     for (key in json.ships) {
         for (key2 in json.ships[key]) {
+            arrEdges.push({from: allIds[name + "_" + key], to: allIds[name + "_" + key2]});
+        }
+    }
+
+    allJsons[name] = json;
+
+    createNetwork();
+}
+
+function createCrossoverNodes(text) {
+    let json = JSON.parse(text);
+
+    for (key in json.ships) {
+        for (key2 in json.ships[key]) {
             arrEdges.push({from: allIds[key], to: allIds[key2]});
         }
     }
 
-    // Draw network map
+    crossoverJson = json;
+
+    createNetwork();
+}
+
+function createNetwork() {
     let nodes = new vis.DataSet(arrNodes);
 
     let edges = new vis.DataSet(arrEdges);
@@ -57,31 +80,62 @@ function createNodes(text) {
     network.on("selectNode", function(node) {
         let id = Object.keys(allIds).find(key => allIds[key] === node.nodes[0]);
         let allElems = {};
-        for (key in json.ships) {
-            for (key2 in json.ships[key]) {
-                if (key2 == id) {
+        let localJson = allJsons[id.split('_')[0]];
+        for (key in localJson.ships) {
+            for (key2 in localJson.ships[key]) {
+                if (localJson.name + "_" + key2 == id) {
                     if (allElems[key] === undefined) {
                         allElems[key] = [];
                     }
-                    json.ships[key][key2].forEach(e => {
+                    localJson.ships[key][key2].forEach(e => {
                         allElems[key].push({link: e.link, linkType: e.linkType, imageId: e.imageId});
                     });
                 }
             }
-            if (key == id) {
-                for (key2 in json.ships[key]) {
+            if (localJson.name + "_" + key == id) {
+                for (key2 in localJson.ships[key]) {
                     if (allElems[key2] === undefined) {
                         allElems[key2] = [];
                     }
-                    json.ships[key][key2].forEach(e => {
+                    localJson.ships[key][key2].forEach(e => {
                         allElems[key2].push({link: e.link, linkType: e.linkType, imageId: e.imageId});
                     });
                 }
             }
         }
+
+        for (key in crossoverJson.ships) {
+            for (key2 in crossoverJson.ships[key]) {
+                if (key2 == id) {
+                    if (allElems[key] === undefined) {
+                        allElems[key] = [];
+                    }
+                    crossoverJson.ships[key][key2].forEach(e => {
+                        allElems[key].push({link: e.link, linkType: e.linkType, imageId: e.imageId});
+                    });
+                }
+            }
+            if (key == id) {
+                for (key2 in crossoverJson.ships[key]) {
+                    if (allElems[key2] === undefined) {
+                        allElems[key2] = [];
+                    }
+                    crossoverJson.ships[key][key2].forEach(e => {
+                        allElems[key2].push({link: e.link, linkType: e.linkType, imageId: e.imageId});
+                    });
+                }
+            }
+        }
+
         let str = "";
         for (key in allElems) {
-            str += toSentenceCase(key) + ":<br/>";
+            if (key.includes("_"))
+            {
+                let s = key.split("_");
+                str = "(" + toSentenceCase(s[0]) + ") " + toSentenceCase(s[1]) + ":<br/>";
+            }
+            else
+                str += toSentenceCase(key) + ":<br/>";
             allElems[key].forEach(e => {
                 switch (e.linkType) {
                     case "pixiv": // Code from https://source.pixiv.net/source/embed.js
@@ -113,12 +167,28 @@ function createNodes(text) {
     });
 }
 
-let http = new XMLHttpRequest();
-http.open("GET", "https://raw.githubusercontent.com/Xwilarg/Ship_data/master/kancolle.json", false);
+let toRequest = [
+    "kancolle", "azurlane", "arknights"
+];
+
+toRequest.forEach(e => {
+    let http = new XMLHttpRequest();
+    http.open("GET", "https://raw.githubusercontent.com/Xwilarg/Ship_data/master/" + e + ".json", false);
+    http.onreadystatechange = function ()
+    {
+        if (this.readyState === 4 && this.status === 200) {
+            createNodes(this.responseText);
+        }
+    };
+    http.send(null);
+});
+
+http = new XMLHttpRequest();
+http.open("GET", "https://raw.githubusercontent.com/Xwilarg/Ship_data/master/crossover.json", false);
 http.onreadystatechange = function ()
 {
     if (this.readyState === 4 && this.status === 200) {
-        createNodes(this.responseText);
+        createCrossoverNodes(this.responseText);
     }
 };
 http.send(null);
