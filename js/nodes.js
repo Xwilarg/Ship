@@ -64,7 +64,7 @@ function createNodes(text) {
                         allElems[key] = [];
                     }
                     json.ships[key][key2].forEach(e => {
-                        allElems[key].push({link: e.link});
+                        allElems[key].push({link: e.link, linkType: e.linkType, imageId: e.imageId});
                     });
                 }
             }
@@ -74,7 +74,7 @@ function createNodes(text) {
                         allElems[key2] = [];
                     }
                     json.ships[key][key2].forEach(e => {
-                        allElems[key2].push({link: e.link});
+                        allElems[key2].push({link: e.link, linkType: e.linkType, imageId: e.imageId});
                     });
                 }
             }
@@ -83,7 +83,21 @@ function createNodes(text) {
         for (key in allElems) {
             str += toSentenceCase(key) + ":<br/>";
             allElems[key].forEach(e => {
-                str += '<a href="' + e.link + '" target="_blank">' + e.link + '</a><br/>';
+                switch (e.linkType) {
+                    case "pixiv": // Code from https://source.pixiv.net/source/embed.js
+                        str += '<a href="' + e.link + '" target="_blank"><iframe src="https://embed.pixiv.net/embed_mk2.php?id=' + /artworks\/([0-9]+)/.exec(e.link)[1] + '&size=medium&border=off" width="360" height="165" frameborder="0" style="vertical-align:middle; border:none;"></iframe></a>'
+                        break;
+
+                    case "nhentai":
+                        str += '<a href="' + e.link + '" target="_blank"><img src="https://i.nhentai.net/galleries/' + e.imageId + '/1.jpg"/></a>';
+                        break;
+
+                    default:
+                        console.error("Unknown link type: " + e.linkType);
+                        str += '<a href="' + e.link + '" target="_blank">' + e.link + '</a>';
+                        break;
+                }
+                str += "<br/>";
             });
             str += "<br/>"
         }
