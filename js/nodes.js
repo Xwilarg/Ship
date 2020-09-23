@@ -168,7 +168,7 @@ function createNetwork() {
 }
 
 let toRequest = [
-    "kancolle", "azurlane", "arknights", "touhou"
+    "kancolle", "azurlane", "arknights", "touhou", "vocaloid"
 ];
 
 toRequest.forEach(e => {
