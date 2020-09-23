@@ -51,7 +51,7 @@ function createCrossoverNodes(text) {
 
     for (key in json.ships) {
         for (key2 in json.ships[key]) {
-            arrEdges.push({from: allIds[key], to: allIds[key2]});
+            arrEdges.push({from: allIds[key], to: allIds[key2], width: 4, selectionWidth: 6});
         }
     }
 
