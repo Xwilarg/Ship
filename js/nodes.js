@@ -151,7 +151,7 @@ function createNetwork() {
                         break;
 
                     case "gelbooru":
-                        str += '<a href="' + e.link + '" target="_blank"><img src="https://img2.gelbooru.com/images/' + e.imageId + '"/></a>';
+                        str += '<a href="' + e.link + '" target="_blank"><img src="' + e.imageId + '"/></a>';
                         break;
 
                     default:
