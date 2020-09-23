@@ -132,7 +132,7 @@ function createNetwork() {
             if (key.includes("_"))
             {
                 let s = key.split("_");
-                str = "(" + toSentenceCase(s[0]) + ") " + toSentenceCase(s[1]) + ":<br/>";
+                str += "(" + toSentenceCase(s[0]) + ") " + toSentenceCase(s[1]) + ":<br/>";
             }
             else
                 str += toSentenceCase(key) + ":<br/>";
