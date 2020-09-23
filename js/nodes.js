@@ -37,7 +37,7 @@ function createNodes(text) {
     // Draw edges
     for (key in json.ships) {
         for (key2 in json.ships[key]) {
-            arrEdges.push({from: allIds[name + "_" + key], to: allIds[name + "_" + key2]});
+            arrEdges.push({from: allIds[name + "_" + key], to: allIds[name + "_" + key2], width: 4, selectionWidth: 6});
         }
     }
 
