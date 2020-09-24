@@ -37,7 +37,7 @@ function createNodes(text) {
     // Draw edges
     for (key in json.ships) {
         for (key2 in json.ships[key]) {
-            arrEdges.push({from: allIds[name + "_" + key], to: allIds[name + "_" + key2]});
+            arrEdges.push({from: allIds[name + "_" + key], to: allIds[name + "_" + key2], width: 4, selectionWidth: 6});
         }
     }
 
@@ -51,7 +51,7 @@ function createCrossoverNodes(text) {
 
     for (key in json.ships) {
         for (key2 in json.ships[key]) {
-            arrEdges.push({from: allIds[key], to: allIds[key2]});
+            arrEdges.push({from: allIds[key], to: allIds[key2], width: 4, selectionWidth: 6});
         }
     }
 
@@ -150,7 +150,7 @@ function createNetwork() {
                         break;
 
                     case "gelbooru":
-                        str += '<a href="' + e.link + '" target="_blank"><img src="https://img2.gelbooru.com/images/' + e.imageId + '"/></a>';
+                        str += '<a href="' + e.link + '" target="_blank"><img src="' + e.imageId + '"/></a>';
                         break;
 
                     default:
@@ -167,7 +167,7 @@ function createNetwork() {
 }
 
 let toRequest = [
-    "kancolle", "azurlane", "arknights"
+    "kancolle", "azurlane", "arknights", "touhou", "vocaloid"
 ];
 
 toRequest.forEach(e => {
