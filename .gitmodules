@@ -1,0 +1,3 @@
+[submodule "Ship_data"]
+	path = Ship_data
+	url = https://github.com/Xwilarg/Ship_data

@@ -12,38 +12,38 @@ let crossoverJson;
 let i = 0;
 
 function createNodes(text) {
-    let json = JSON.parse(text);
+    let jsons = JSON.parse(text);
 
-    let name = json.name;
-    let color = json.color;
+    for (let json of jsons) {
+        let name = json.name;
+        let color = json.color;
 
-    // Add all characters to id list (+ draw nodes)
-    for (key in json.ships) {
-        arrNodes.push({ id: i, label: toSentenceCase(key), color: color });
-        allIds[name + "_" + key] = i;
-        i++;
-    }
+        // Add all characters to id list (+ draw nodes)
+        for (key in json.ships) {
+            arrNodes.push({ id: i, label: toSentenceCase(key), color: color });
+            allIds[name + "_" + key] = i;
+            i++;
+        }
 
-    for (key in json.ships) {
-        for (key2 in json.ships[key]) {
-            if (allIds[name + "_" + key2] === undefined) {
-                arrNodes.push({ id: i, label: toSentenceCase(key2), color: color });
-                allIds[name + "_" + key2] = i;
-                i++;
+        for (key in json.ships) {
+            for (key2 in json.ships[key]) {
+                if (allIds[name + "_" + key2] === undefined) {
+                    arrNodes.push({ id: i, label: toSentenceCase(key2), color: color });
+                    allIds[name + "_" + key2] = i;
+                    i++;
+                }
             }
         }
-    }
 
-    // Draw edges
-    for (key in json.ships) {
-        for (key2 in json.ships[key]) {
-            arrEdges.push({from: allIds[name + "_" + key], to: allIds[name + "_" + key2], width: 4, selectionWidth: 6});
+        // Draw edges
+        for (key in json.ships) {
+            for (key2 in json.ships[key]) {
+                arrEdges.push({from: allIds[name + "_" + key], to: allIds[name + "_" + key2], width: 4, selectionWidth: 6});
+            }
         }
+
+        allJsons[name] = json;
     }
-
-    allJsons[name] = json;
-
-    createNetwork();
 }
 
 function createCrossoverNodes(text) {
@@ -65,17 +65,26 @@ function createNetwork() {
 
     let edges = new vis.DataSet(arrEdges);
 
-    let container = document.getElementById("nodes");
+    let container = document.getElementById("network");
     let data = {
         nodes: nodes,
         edges: edges
     };
 
-    let options = {
-        clickToUse: true
-    };
-
+    let options = { };
     let network = new vis.Network(container, data, options);
+
+    network.on("stabilizationProgress", function(params) {
+        let maxWidth = 940;
+        let widthFactor = params.iterations / params.total;
+        let width = maxWidth * widthFactor;
+    
+        document.getElementById("bar").style.width = width + "px";
+    });
+
+    network.once("stabilizationIterationsDone", function () {
+        document.getElementById("loadingBar").hidden = true;
+    });
 
     network.on("selectNode", function(node) {
         let id = Object.keys(allIds).find(key => allIds[key] === node.nodes[0]);
@@ -179,28 +188,23 @@ function createNetwork() {
     });
 }
 
-let toRequest = [
-    "kancolle", "azurlane", "arknights", "touhou", "vocaloid", "fate", "fireemblem", "hololive", "madoka"
-];
-
-toRequest.forEach(e => {
-    let http = new XMLHttpRequest();
-    http.open("GET", "https://raw.githubusercontent.com/Xwilarg/Ship_data/master/" + e + ".json", false);
-    http.onreadystatechange = function ()
-    {
-        if (this.readyState === 4 && this.status === 200) {
-            createNodes(this.responseText);
-        }
-    };
-    http.send(null);
-});
-
-http = new XMLHttpRequest();
-http.open("GET", "https://raw.githubusercontent.com/Xwilarg/Ship_data/master/crossover.json", false);
+let http = new XMLHttpRequest();
+http.open("GET", "php/getJson.php", false);
 http.onreadystatechange = function ()
 {
     if (this.readyState === 4 && this.status === 200) {
-        createCrossoverNodes(this.responseText);
+        createNodes(this.responseText);
+        
+        // TODO: Can probably do that by contacting the backend
+        http = new XMLHttpRequest();
+        http.open("GET", "https://raw.githubusercontent.com/Xwilarg/Ship_data/master/crossover.json", false);
+        http.onreadystatechange = function ()
+        {
+            if (this.readyState === 4 && this.status === 200) {
+                createCrossoverNodes(this.responseText);
+            }
+        };
+        http.send(null);
     }
 };
 http.send(null);
