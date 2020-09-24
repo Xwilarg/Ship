@@ -141,15 +141,11 @@ function createNetwork() {
                         str += '<a href="' + e.link + '" target="_blank"><iframe src="https://embed.pixiv.net/embed_mk2.php?id=' + /artworks\/([0-9]+)/.exec(e.link)[1] + '&size=medium&border=off" width="360" height="165" frameborder="0" style="vertical-align:middle; border:none;"></iframe></a>'
                         break;
 
-                    case "nhentai":
-                        str += '<a href="' + e.link + '" target="_blank"><img src="https://i.nhentai.net/galleries/' + e.imageId + '/1.jpg"/></a>';
-                        break;
-
                     case "twitter":
                         str += '<a href="' + e.link + '" target="_blank"><img src="https://pbs.twimg.com/media/' + e.imageId + '?format=jpg&name=small"/></a>';
                         break;
 
-                    case "gelbooru": case "rule34": case "yandere": case "deviantart":
+                    case "gelbooru": case "rule34": case "yandere": case "deviantart": case "shikotch":
                         str += '<a href="' + e.link + '" target="_blank"><img src="' + e.imageId + '"/></a>';
                         break;
 
