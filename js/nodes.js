@@ -127,6 +127,7 @@ function createNetwork() {
         }
 
         let str = "";
+        let gelbooru = [];
         for (key in allElems) {
             if (key.includes("_"))
             {
@@ -145,7 +146,12 @@ function createNetwork() {
                         str += '<a href="' + e.link + '" target="_blank"><img src="https://pbs.twimg.com/media/' + e.imageId + '?format=jpg&name=small"/></a>';
                         break;
 
-                    case "gelbooru": case "rule34": case "yandere": case "deviantart": case "shikotch":
+                    case "gelbooru":
+                        str += '<a href="' + e.link + '" target="_blank"><img id="gelbooru-' + e.imageId + '" src=""/></a>';
+                        gelbooru.push(e.imageId);
+                        break;
+
+                    case "rule34": case "yandere": case "deviantart": case "shikotch":
                         str += '<a href="' + e.link + '" target="_blank"><img src="' + e.imageId + '"/></a>';
                         break;
 
@@ -159,6 +165,17 @@ function createNetwork() {
             str += "<br/>"
         }
         document.getElementById("infos").innerHTML = str;
+
+        gelbooru.forEach(elem => {
+            let image = document.getElementById('gelbooru-' + elem);
+
+            fetch("php/getUrlContent.php?url=" + elem).then(function(response) {
+                return response.blob();
+            }).then(function(blob) {
+                var objectURL = URL.createObjectURL(blob);
+                image.src = objectURL;
+            });
+        });
     });
 }
 
