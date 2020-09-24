@@ -149,7 +149,7 @@ function createNetwork() {
                         str += '<a href="' + e.link + '" target="_blank"><img src="https://pbs.twimg.com/media/' + e.imageId + '?format=jpg&name=small"/></a>';
                         break;
 
-                    case "gelbooru": case "rule34": case "yandere":
+                    case "gelbooru": case "rule34": case "yandere": case "deviantart":
                         str += '<a href="' + e.link + '" target="_blank"><img src="' + e.imageId + '"/></a>';
                         break;
 
@@ -167,7 +167,7 @@ function createNetwork() {
 }
 
 let toRequest = [
-    "kancolle", "azurlane", "arknights", "touhou", "vocaloid", "fate", "fireemblem", "hololive"
+    "kancolle", "azurlane", "arknights", "touhou", "vocaloid", "fate", "fireemblem", "hololive", "madoka"
 ];
 
 toRequest.forEach(e => {
