@@ -1,5 +1,5 @@
 <?php
-$allJson = ["kancolle", "azurlane", "arknights", "touhou", "vocaloid", "fate", "fireemblem", "hololive", "madoka"];
+$allJson = ["kancolle", "azurlane", "arknights", "touhou", "vocaloid", "fate", "fireemblem", "hololive", "madoka", "girlsfrontline"];
 
 $data = [];
 
