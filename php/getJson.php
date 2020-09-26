@@ -1,5 +1,5 @@
 <?php
-$allJson = ["kancolle", "azurlane", "arknights", "touhou", "vocaloid", "fate", "fireemblem", "hololive", "madoka", "girlsfrontline", "idolmaster"];
+$allJson = json_decode(file_get_contents(__DIR__ . "/../Ship_data/names.json"), true)["names"];
 
 $data = [];
 
