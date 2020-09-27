@@ -93,12 +93,12 @@ function createCrossoverNodes(text) {
                 arrNodes[id2].push({ id: allIds[key], label: toSentenceCase(key.split('_')[1]) + " (" + id1 + ")", color: namesToColor[id1] });
                 alreadyNames.push(allIds[key]);
             }
-            arrEdges[id1].push({from: allIds[key], to: allIds[key2], width: 4, selectionWidth: 6});
-            arrEdges[id2].push({from: allIds[key], to: allIds[key2], width: 4, selectionWidth: 6});
+            arrEdges[id1].push({from: allIds[key], to: allIds[key2], width: 4, selectionWidth: 6, color: { color: namesToColor[id1] }});
+            arrEdges[id2].push({from: allIds[key], to: allIds[key2], width: 4, selectionWidth: 6, color: { color: namesToColor[id2] }});
 
             if (!ids.includes(id1 + " " + id2)) {
                 ids.push(id1 + " " + id2);
-                edgesSeries.push({from: idsSeries[id1], to: idsSeries[id2], width: 4, selectionWidth: 6});
+                edgesSeries.push({from: idsSeries[id1], to: idsSeries[id2], width: 4, selectionWidth: 6, color: { inherit: false }});
             }
         }
     }
