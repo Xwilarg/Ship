@@ -2,25 +2,42 @@ function toSentenceCase(str) {
     return str.slice(0, 1).toUpperCase() + str.slice(1, str.length)
 }
 
+// -1: Display all anime names
+// >= 0 Anime id 
+let currentDisplay = -1;
+
+let seriesIds = {}; // Associate all anime names with ids
+
+// Display all series
+let nodesSeries = [];
+let edgesSeries = [];
+let idsSeries = {};
+
+// Display all nodes
 let allIds = {};
-let arrNodes = [];
-let arrEdges = [];
+let arrNodes = {};
+let arrEdges = {};
 
 let allJsons = {};
 let crossoverJson;
+
+let currentAnime; // Currently displayed anime
 
 let i = 0;
 
 function createNodes(text) {
     let jsons = JSON.parse(text);
 
+    let y = 0;
     for (let json of jsons) {
         let name = json.name;
         let color = json.color;
 
+        let nodes = [];
+        let edges = [];
         // Add all characters to id list (+ draw nodes)
         for (key in json.ships) {
-            arrNodes.push({ id: i, label: toSentenceCase(key), color: color });
+            nodes.push({ id: i, label: toSentenceCase(key), color: color });
             allIds[name + "_" + key] = i;
             i++;
         }
@@ -28,7 +45,7 @@ function createNodes(text) {
         for (key in json.ships) {
             for (key2 in json.ships[key]) {
                 if (allIds[name + "_" + key2] === undefined) {
-                    arrNodes.push({ id: i, label: toSentenceCase(key2), color: color });
+                    nodes.push({ id: i, label: toSentenceCase(key2), color: color });
                     allIds[name + "_" + key2] = i;
                     i++;
                 }
@@ -38,32 +55,60 @@ function createNodes(text) {
         // Draw edges
         for (key in json.ships) {
             for (key2 in json.ships[key]) {
-                arrEdges.push({from: allIds[name + "_" + key], to: allIds[name + "_" + key2], width: 4, selectionWidth: 6});
+                edges.push({from: allIds[name + "_" + key], to: allIds[name + "_" + key2], width: 4, selectionWidth: 6});
             }
         }
 
+        arrNodes[name] = nodes;
+        arrEdges[name] = edges;
+
         allJsons[name] = json;
+
+        // Get series infos
+        nodesSeries.push({ id: y, label: toSentenceCase(name), color: color });
+        idsSeries[name] = y;
+        y++;
     }
 }
 
 function createCrossoverNodes(text) {
     let json = JSON.parse(text);
 
+    let ids = [];
+    let alreadyNames = [];
     for (key in json.ships) {
         for (key2 in json.ships[key]) {
-            arrEdges.push({from: allIds[key], to: allIds[key2], width: 4, selectionWidth: 6});
+
+            let id1 = key.split('_')[0];
+            let id2 = key2.split('_')[0];
+
+            if (!alreadyNames.includes(allIds[key2])) {
+                arrNodes[id1].push({ id: allIds[key2], label: toSentenceCase(key2.split('_')[1]) + " (" + id2 + ")", color: "grey" });
+                alreadyNames.push(allIds[key2]);
+            }
+            if (!alreadyNames.includes(allIds[key])) {
+                arrNodes[id2].push({ id: allIds[key], label: toSentenceCase(key.split('_')[1]) + " (" + id1 + ")", color: "grey" });
+                alreadyNames.push(allIds[key]);
+            }
+            arrEdges[id1].push({from: allIds[key], to: allIds[key2], width: 4, selectionWidth: 6});
+            arrEdges[id2].push({from: allIds[key], to: allIds[key2], width: 4, selectionWidth: 6});
+
+            if (!ids.includes(id1 + " " + id2)) {
+                ids.push(id1 + " " + id2);
+                edgesSeries.push({from: idsSeries[id1], to: idsSeries[id2], width: 4, selectionWidth: 6});
+            }
         }
     }
 
     crossoverJson = json;
 
-    createNetwork();
+    createNetwork(nodesSeries, edgesSeries);
 }
 
-function createNetwork() {
-    let nodes = new vis.DataSet(arrNodes);
+function createNetwork(argNodes, argEdges) {
+    let nodes = new vis.DataSet(argNodes);
 
-    let edges = new vis.DataSet(arrEdges);
+    let edges = new vis.DataSet(argEdges);
 
     let container = document.getElementById("network");
     let data = {
@@ -86,8 +131,17 @@ function createNetwork() {
         document.getElementById("loadingBar").hidden = true;
     });
 
+    // When we click on a node
     network.on("selectNode", function(node) {
+        if (currentDisplay === -1) { // Go inside a node
+            currentDisplay = node.nodes[0];
+            let id = Object.keys(idsSeries).find(key => idsSeries[key] === node.nodes[0]);
+            currentAnime = id;
+            createNetwork(arrNodes[id], arrEdges[id]);
+            return;
+        }
         let id = Object.keys(allIds).find(key => allIds[key] === node.nodes[0]);
+        console.log(id.split('_')[0]);
         let allElems = {};
         let localJson = allJsons[id.split('_')[0]];
         for (key in localJson.ships) {
