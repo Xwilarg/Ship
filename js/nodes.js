@@ -3,7 +3,7 @@ function toSentenceCase(str) {
 }
 
 // -1: Display all anime names
-// >= 0 Anime id 
+// 0: Display an anime
 let currentDisplay = -1;
 
 let seriesIds = {}; // Associate all anime names with ids
@@ -22,6 +22,8 @@ let allJsons = {};
 let crossoverJson;
 
 let currentAnime; // Currently displayed anime
+
+let namesToColor = {};
 
 let i = 0;
 
@@ -63,6 +65,7 @@ function createNodes(text) {
         arrEdges[name] = edges;
 
         allJsons[name] = json;
+        namesToColor[name] = color;
 
         // Get series infos
         nodesSeries.push({ id: y, label: toSentenceCase(name), color: color });
@@ -83,11 +86,11 @@ function createCrossoverNodes(text) {
             let id2 = key2.split('_')[0];
 
             if (!alreadyNames.includes(allIds[key2])) {
-                arrNodes[id1].push({ id: allIds[key2], label: toSentenceCase(key2.split('_')[1]) + " (" + id2 + ")", color: "grey" });
+                arrNodes[id1].push({ id: allIds[key2], label: toSentenceCase(key2.split('_')[1]) + " (" + id2 + ")", color: namesToColor[id2] });
                 alreadyNames.push(allIds[key2]);
             }
             if (!alreadyNames.includes(allIds[key])) {
-                arrNodes[id2].push({ id: allIds[key], label: toSentenceCase(key.split('_')[1]) + " (" + id1 + ")", color: "grey" });
+                arrNodes[id2].push({ id: allIds[key], label: toSentenceCase(key.split('_')[1]) + " (" + id1 + ")", color: namesToColor[id1] });
                 alreadyNames.push(allIds[key]);
             }
             arrEdges[id1].push({from: allIds[key], to: allIds[key2], width: 4, selectionWidth: 6});
@@ -134,14 +137,17 @@ function createNetwork(argNodes, argEdges) {
     // When we click on a node
     network.on("selectNode", function(node) {
         if (currentDisplay === -1) { // Go inside a node
-            currentDisplay = node.nodes[0];
+            currentDisplay = 0;
             let id = Object.keys(idsSeries).find(key => idsSeries[key] === node.nodes[0]);
             currentAnime = id;
-            createNetwork(arrNodes[id], arrEdges[id]);
+            createNetwork(arrNodes[currentAnime], arrEdges[currentAnime]);
             return;
         }
         let id = Object.keys(allIds).find(key => allIds[key] === node.nodes[0]);
-        console.log(id.split('_')[0]);
+        if (id.split('_')[0] != currentAnime) {
+            currentAnime = id.split('_')[0];
+            createNetwork(arrNodes[currentAnime], arrEdges[currentAnime]);
+        }
         let allElems = {};
         let localJson = allJsons[id.split('_')[0]];
         for (key in localJson.ships) {
