@@ -7,7 +7,12 @@
         <link rel="stylesheet" type="text/css" href="css/index.css">
     </head>
     <body>
-        <div id="nodes">
+        <div id="buttons">
+            <button onclick="loadData('custom')">Load data from custom files</button>
+            <button onclick="loadData('gelbooru')">Load data from Gelbooru (experimental)</button>
+            <br/><br/><hr/><br/>
+        </div>
+        <div id="nodes" hidden>
             <div id="network"></div>
             <div id="loadingBar">
                 <div id="outerBorder">

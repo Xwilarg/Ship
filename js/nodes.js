@@ -248,23 +248,27 @@ function createNetwork(argNodes, argEdges) {
     });
 }
 
-let http = new XMLHttpRequest();
-http.open("GET", "php/getJson.php?folder=custom", false);
-http.onreadystatechange = function ()
-{
-    if (this.readyState === 4 && this.status === 200) {
-        createNodes(this.responseText);
-        
-        // TODO: Can probably do that by contacting the backend
-        http = new XMLHttpRequest();
-        http.open("GET", "php/getCrossoverJson.php?folder=custom", false);
-        http.onreadystatechange = function ()
-        {
-            if (this.readyState === 4 && this.status === 200) {
-                createCrossoverNodes(this.responseText);
-            }
-        };
-        http.send(null);
-    }
-};
-http.send(null);
+function loadData(name) {
+    document.getElementById("buttons").hidden = true;
+    document.getElementById("nodes").hidden = false;
+
+    let http = new XMLHttpRequest();
+    http.open("GET", "php/getJson.php?folder=" + name, false);
+    http.onreadystatechange = function ()
+    {
+        if (this.readyState === 4 && this.status === 200) {
+            createNodes(this.responseText);
+
+            http = new XMLHttpRequest();
+            http.open("GET", "php/getCrossoverJson.php?folder=" + name, false);
+            http.onreadystatechange = function ()
+            {
+                if (this.readyState === 4 && this.status === 200) {
+                    createCrossoverNodes(this.responseText);
+                }
+            };
+            http.send(null);
+        }
+    };
+    http.send(null);
+}
