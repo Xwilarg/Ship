@@ -249,7 +249,7 @@ function createNetwork(argNodes, argEdges) {
 }
 
 let http = new XMLHttpRequest();
-http.open("GET", "php/getJson.php", false);
+http.open("GET", "php/getJson.php?folder=custom", false);
 http.onreadystatechange = function ()
 {
     if (this.readyState === 4 && this.status === 200) {
@@ -257,7 +257,7 @@ http.onreadystatechange = function ()
         
         // TODO: Can probably do that by contacting the backend
         http = new XMLHttpRequest();
-        http.open("GET", "https://raw.githubusercontent.com/Xwilarg/Ship_data/master/crossover.json", false);
+        http.open("GET", "php/getCrossoverJson.php?folder=custom", false);
         http.onreadystatechange = function ()
         {
             if (this.readyState === 4 && this.status === 200) {
