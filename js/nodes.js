@@ -109,6 +109,8 @@ function createCrossoverNodes(text) {
 }
 
 function createNetwork(argNodes, argEdges) {
+    document.getElementById("loadingBar").hidden = false;
+    document.getElementById("bar").style.width = 0;
     let nodes = new vis.DataSet(argNodes);
 
     let edges = new vis.DataSet(argEdges);
