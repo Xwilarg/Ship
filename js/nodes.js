@@ -221,12 +221,12 @@ function createNetwork(argNodes, argEdges) {
                         str += '<a href="' + e.link + '" target="_blank"><img src="https://pbs.twimg.com/media/' + e.imageId + '?format=jpg&name=small"/></a>';
                         break;
 
-                    case "gelbooru":
+                    case "gelbooru": case "yandere":
                         str += '<a href="' + e.link + '" target="_blank"><img id="gelbooru-' + e.imageId + '" src=""/></a>';
                         gelbooru.push(e.imageId);
                         break;
 
-                    case "rule34": case "yandere": case "deviantart": case "shikotch":
+                    case "deviantart": case "shikotch":
                         str += '<a href="' + e.link + '" target="_blank"><img src="' + e.imageId + '"/></a>';
                         break;
 
