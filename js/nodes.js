@@ -255,7 +255,7 @@ function createNetwork(argNodes, argEdges) {
 }
 
 function loadData(name) {
-    document.getElementById("buttons").hidden = true;
+    document.getElementById("hidden-container").hidden = true;
     document.getElementById("nodes").hidden = false;
 
     let http = new XMLHttpRequest();

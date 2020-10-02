@@ -55,3 +55,22 @@ img {
     border: 2px solid rgba(30, 30, 30, 0.05);
     box-shadow: 2px 0px 4px rgba(0, 0, 0, 0.4);
 }
+
+#intro-wrapper {
+    display: flex;
+    border: 1px black solid;
+    height: 750px;
+    text-align: center;
+}
+
+#left {
+    flex: 0 0 65%;
+}
+
+#intro-wrapper div {
+    margin-top: 100px;
+}
+
+#intro-wrapper button {
+    height: 50px;
+}

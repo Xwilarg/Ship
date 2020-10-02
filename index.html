@@ -7,11 +7,24 @@
         <link rel="stylesheet" type="text/css" href="css/index.css">
     </head>
     <body>
-        <div id="buttons">
-            <button onclick="loadData('custom')">Load data from custom files</button>
-            <button onclick="loadData('gelbooru')">Load data from Gelbooru (experimental)</button>
-            <br/><br/><hr/><br/>
-        </div>
+        <span id="hidden-container">
+            <div id="intro-wrapper">
+                <div id="left">
+                    <button onclick="loadData('custom')">Load data from custom files</button>
+                    <p>
+                        All data are handpicked from a lot of different sources<br/>
+                        There are less characters but the end result is more clean with more licences
+                    </p>
+                </div>
+                <div>
+                    <button onclick="loadData('gelbooru')">Load data from Gelbooru</button>
+                    <p>
+                        All data are taken from Gelbooru using a script<br/>
+                        This means way more characters but the end result is a bit more messy
+                    </p>
+                </div>
+            </div>
+        </span>
         <div id="nodes" hidden>
             <div id="network"></div>
             <div id="loadingBar">
