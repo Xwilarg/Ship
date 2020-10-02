@@ -85,6 +85,10 @@ function createCrossoverNodes(text) {
             let id1 = key.split('_')[0];
             let id2 = key2.split('_')[0];
 
+            if (arrNodes[id1] === undefined || arrNodes[id2] === undefined) {
+                continue;
+            }
+
             if (!alreadyNames.includes(allIds[key2])) {
                 arrNodes[id1].push({ id: allIds[key2], label: toSentenceCase(key2.split('_')[1]) + " (" + id2 + ")", color: namesToColor[id2] });
                 alreadyNames.push(allIds[key2]);
