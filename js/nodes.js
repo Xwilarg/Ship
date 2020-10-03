@@ -78,7 +78,7 @@ function createCrossoverNodes(text) {
     let json = JSON.parse(text);
 
     let ids = [];
-    let alreadyNames = [];
+    let alreadyNames = {};
     for (key in json.ships) {
         for (key2 in json.ships[key]) {
 
@@ -89,13 +89,17 @@ function createCrossoverNodes(text) {
                 continue;
             }
 
-            if (!alreadyNames.includes(allIds[key2])) {
+            if (alreadyNames[id1] === undefined || !alreadyNames[id1].includes(allIds[key2])) {
                 arrNodes[id1].push({ id: allIds[key2], label: toSentenceCase(key2.split('_')[1]) + " (" + id2 + ")", color: namesToColor[id2] });
-                alreadyNames.push(allIds[key2]);
+                if (alreadyNames[id1] === undefined)
+                    alreadyNames[id1] = [];
+                alreadyNames[id1].push(allIds[key2]);
             }
-            if (!alreadyNames.includes(allIds[key])) {
+            if (alreadyNames[id2] === undefined || !alreadyNames[id2].includes(allIds[key])) {
                 arrNodes[id2].push({ id: allIds[key], label: toSentenceCase(key.split('_')[1]) + " (" + id1 + ")", color: namesToColor[id1] });
-                alreadyNames.push(allIds[key]);
+                if (alreadyNames[id2] === undefined)
+                    alreadyNames[id2] = [];
+                alreadyNames[id2].push(allIds[key]);
             }
             arrEdges[id1].push({from: allIds[key], to: allIds[key2], width: 4, selectionWidth: 6, color: { color: namesToColor[id1] }});
             arrEdges[id2].push({from: allIds[key], to: allIds[key2], width: 4, selectionWidth: 6, color: { color: namesToColor[id2] }});
