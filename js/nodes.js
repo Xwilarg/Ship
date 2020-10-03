@@ -218,7 +218,7 @@ function createNetwork(argNodes, argEdges) {
                         break;
 
                     case "twitter":
-                        str += '<a href="' + e.link + '" target="_blank"><img src="https://pbs.twimg.com/media/' + e.imageId + '?format=jpg&name=small"/></a>';
+                        str += '<a href="' + e.link + '" target="_blank"><img src="https://pbs.twimg.com/media/' + e.imageId + '?format=jpg"/></a>';
                         break;
 
                     case "gelbooru": case "yandere":
