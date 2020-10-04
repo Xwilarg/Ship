@@ -236,6 +236,10 @@ function createNetwork(argNodes, argEdges) {
                         str += '<a href="' + e.link + '" target="_blank"><img src="' + e.imageId + '"/></a>';
                         break;
 
+                    case "other":
+                        str += '<img src="' + e.imageId + '"/>';
+                        break;
+
                     default:
                         console.error("Unknown link type: " + e.linkType);
                         str += '<a href="' + e.link + '" target="_blank">' + e.link + '</a>';
