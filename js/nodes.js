@@ -103,8 +103,8 @@ function createCrossoverNodes(text) {
                     alreadyNames[id2] = [];
                 alreadyNames[id2].push(allIds[key]);
             }
-            arrEdges[id1].push({from: allIds[key], to: allIds[key2], width: 4, selectionWidth: 6, color: { color: namesToColor[id1] }});
-            arrEdges[id2].push({from: allIds[key], to: allIds[key2], width: 4, selectionWidth: 6, color: { color: namesToColor[id2] }});
+            arrEdges[id1].push({from: allIds[key], to: allIds[key2], width: 4, selectionWidth: 6, color: { color: namesToColor[id2] }});
+            arrEdges[id2].push({from: allIds[key], to: allIds[key2], width: 4, selectionWidth: 6, color: { color: namesToColor[id1] }});
 
             if (!ids.includes(id1 + " " + id2)) {
                 ids.push(id1 + " " + id2);
