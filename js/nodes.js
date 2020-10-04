@@ -27,6 +27,8 @@ let namesToColor = {};
 
 let i = 0;
 
+let dir = "https://ship.zirk.eu/Ship_data/img/"
+
 function createNodes(text) {
     let jsons = JSON.parse(text);
 
@@ -39,7 +41,7 @@ function createNodes(text) {
         let edges = [];
         // Add all characters to id list (+ draw nodes)
         for (key in json.ships) {
-            nodes.push({ id: i, label: toSentenceCase(key), color: color });
+            nodes.push({ id: i, label: toSentenceCase(key), color: color, shape: "circularImage", image: dir + name + "/" + key + ".png" });
             allIds[name + "_" + key] = i;
             i++;
         }
@@ -47,7 +49,7 @@ function createNodes(text) {
         for (key in json.ships) {
             for (key2 in json.ships[key]) {
                 if (allIds[name + "_" + key2] === undefined) {
-                    nodes.push({ id: i, label: toSentenceCase(key2), color: color });
+                    nodes.push({ id: i, label: toSentenceCase(key2), color: color, shape: "circularImage", image: dir + name + "/" + key2 + ".png" });
                     allIds[name + "_" + key2] = i;
                     i++;
                 }
@@ -90,13 +92,13 @@ function createCrossoverNodes(text) {
             }
 
             if (alreadyNames[id1] === undefined || !alreadyNames[id1].includes(allIds[key2])) {
-                arrNodes[id1].push({ id: allIds[key2], label: toSentenceCase(key2.split('_')[1]) + " (" + id2 + ")", color: namesToColor[id2] });
+                arrNodes[id1].push({ id: allIds[key2], label: toSentenceCase(key2.split('_')[1]) + " (" + id2 + ")", color: namesToColor[id2], shape: "circularImage", image: dir + id2 + "/" + key2.split('_')[1] + ".png" });
                 if (alreadyNames[id1] === undefined)
                     alreadyNames[id1] = [];
                 alreadyNames[id1].push(allIds[key2]);
             }
             if (alreadyNames[id2] === undefined || !alreadyNames[id2].includes(allIds[key])) {
-                arrNodes[id2].push({ id: allIds[key], label: toSentenceCase(key.split('_')[1]) + " (" + id1 + ")", color: namesToColor[id1] });
+                arrNodes[id2].push({ id: allIds[key], label: toSentenceCase(key.split('_')[1]) + " (" + id1 + ")", color: namesToColor[id1], shape: "circularImage", image: dir + id1 + "/" + key.split('_')[1] + ".png" });
                 if (alreadyNames[id2] === undefined)
                     alreadyNames[id2] = [];
                 alreadyNames[id2].push(allIds[key]);
