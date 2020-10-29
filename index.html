@@ -7,17 +7,21 @@
         <link rel="stylesheet" type="text/css" href="css/index.css">
     </head>
     <body>
+        <h1>Ship</h1>
+        <p id="userIntro">
+            Select a mode, choose an anime/game, see what crazy ship the community are making
+        </p>
         <span id="hidden-container">
             <div id="intro-wrapper">
                 <div id="left">
-                    <button onclick="loadData('custom')">Load data from custom files (recommanded)</button>
+                    <button onclick="loadData('custom')">Load data from custom files<br/>(recommanded)</button>
                     <p>
                         All data are handpicked from a lot of different sources<br/>
                         There are less characters but the end result is more clean with more licences
                     </p>
                 </div>
                 <div>
-                    <button onclick="loadData('gelbooru')">Load data from Gelbooru</button>
+                    <button onclick="loadData('gelbooru')">Load data from Gelbooru<br/>(experimental)</button>
                     <p>
                         All data are taken from Gelbooru using a script<br/>
                         This means way more characters but the end result is a bit more messy
