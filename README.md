@@ -1,5 +1,5 @@
 # Ships
-Display the differents ships between characters from an anime<br/>
+Display the differents community made ships between characters from an anime<br/>
 https://ship.zirk.eu
 
 ## Philosophy
