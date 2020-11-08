@@ -2,7 +2,7 @@
 
 if (substr($_GET['url'], 0, 4) !== "http")
 {
-    echo("Invalid operation");
+    http_response_code(404);
 }
 else
 {
