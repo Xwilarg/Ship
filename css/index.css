@@ -13,14 +13,12 @@ body {
     line-height: 1.25;
 }
 
-
-
 footer {
     font-size: 14px;
     padding-top: 10px;
     margin-top: 25px;
     bottom: 0;
-    position: absolute;
+    position: relative;
 }
 
 #userIntro {
