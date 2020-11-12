@@ -104,6 +104,11 @@ img {
     border-left: 1px solid black;
 }
 
+#right div {
+    background-color: #ff7575;
+    color: black;
+}
+
 #intro-wrapper {
     width: 80%;
     margin: auto;
@@ -112,4 +117,15 @@ img {
     background-color: #fff;
     padding-top: 20px;
     padding-bottom: 20px;
+}
+
+#intro-wrapper button {
+    padding: 5px 10px 5px 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    cursor:x
+}
+
+#intro-wrapper button:hover {
+    background-color: #f9f9f9;
 }
