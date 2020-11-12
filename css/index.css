@@ -13,11 +13,14 @@ body {
     line-height: 1.25;
 }
 
+
+
 footer {
-    font-size: 12px;
-    border-top: 1px solid black;
+    font-size: 14px;
     padding-top: 10px;
     margin-top: 25px;
+    bottom: 0;
+    position: absolute;
 }
 
 #userIntro {
@@ -25,15 +28,20 @@ footer {
 }
 
 #userInfo {
-    border: 1px solid black;
-    border-radius: 4px;
     text-align: center;
+    background-color: #fff;
+    border-radius: 4px;
+    width: 80%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin: auto;
 }
 
 #nodes {
     position: relative;
     width: 1500px;
     height: 750px;
+    margin: auto;
 }
 
 #network {
@@ -88,21 +96,22 @@ img {
     box-shadow: 2px 0px 4px rgba(0, 0, 0, 0.4);
 }
 
-#intro-wrapper {
-    display: flex;
-    border: 1px black solid;
-    height: 750px;
-    text-align: center;
-}
-
 #left {
-    flex: 0 0 65%;
+    width: 50%;
+    float: left;
 }
 
-#intro-wrapper div {
-    margin-top: 100px;
+#right {
+    margin-left: 50%;
+    border-left: 1px solid black;
 }
 
-#intro-wrapper button {
-    height: 50px;
+#intro-wrapper {
+    width: 80%;
+    margin: auto;
+    text-align: center;
+    border-radius: 4px;
+    background-color: #fff;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
