@@ -1,0 +1,1 @@
+This folder is where images will be saved

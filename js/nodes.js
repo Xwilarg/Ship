@@ -208,15 +208,25 @@ function createNetwork(argNodes, argEdges) {
         }
 
         let str = "";
-        let gelbooru = [];
+        let imageLinks = [];
         for (key in allElems) {
+            let characterName;
+            let animeName;
+            var myName = toSentenceCase(id.split('_')[1]);
             if (key.includes("_"))
             {
                 let s = key.split("_");
+                characterName = toSentenceCase(s[0]) + "_" + toSentenceCase(s[1]);
+                animeName = "crossover";
                 str += "(" + toSentenceCase(s[0]) + ") " + toSentenceCase(s[1]) + ":<br/>";
             }
             else
+            {
+                characterName = toSentenceCase(key);
+                animeName = toSentenceCase(currentAnime);
                 str += toSentenceCase(key) + ":<br/>";
+            }
+            console.log(animeName + " | " + characterName + " | " + myName);
             allElems[key].forEach(e => {
                 switch (e.linkType) {
                     case "pixiv": // Code from https://source.pixiv.net/source/embed.js
@@ -224,20 +234,18 @@ function createNetwork(argNodes, argEdges) {
                         break;
 
                     case "twitter":
-                        str += '<a href="' + e.link + '" target="_blank"><img src="https://pbs.twimg.com/media/' + e.imageId + '?format=jpg"/></a>';
+                        str += '<a href="' + e.link + '" target="_blank"><img id="imageId-' + e.imageId + '" src=""/></a>';
+                        imageLinks.push({imageId: 'https://pbs.twimg.com/media/' + e.imageId + '?format=jpg', anime: animeName, c1: characterName, c2: myName});
                         break;
 
-                    case "gelbooru": case "yandere":
-                        str += '<a href="' + e.link + '" target="_blank"><img id="gelbooru-' + e.imageId + '" src=""/></a>';
-                        gelbooru.push(e.imageId);
-                        break;
-
-                    case "deviantart": case "shikotch":
-                        str += '<a href="' + e.link + '" target="_blank"><img src="' + e.imageId + '"/></a>';
+                    case "gelbooru": case "yandere": case "deviantart": case "shikotch":
+                        str += '<a href="' + e.link + '" target="_blank"><img id="imageId-' + e.imageId + '" src=""/></a>';
+                        imageLinks.push({imageId: e.imageId, anime: animeName, c1: characterName, c2: myName});
                         break;
 
                     case "other":
                         str += '<img src="' + e.imageId + '"/>';
+                        imageLinks.push({imageId: e.imageId, anime: animeName, c1: characterName, c2: myName});
                         break;
 
                     default:
@@ -251,14 +259,13 @@ function createNetwork(argNodes, argEdges) {
         }
         document.getElementById("infos").innerHTML = str;
 
-        gelbooru.forEach(elem => {
-            let image = document.getElementById('gelbooru-' + elem);
+        imageLinks.forEach(elem => {
+            let image = document.getElementById('imageId-' + elem.imageId);
 
-            fetch("php/getUrlContent.php?url=" + elem).then(function(response) {
-                return response.blob();
-            }).then(function(blob) {
-                var objectURL = URL.createObjectURL(blob);
-                image.src = objectURL;
+            fetch("php/getImage.php?imageLink=" + elem.imageId + "&animeName=" + elem.anime + "&characterName=" + elem.c1 + "&characterName2=" + elem.c2).then(function(response) {
+                return response.text();
+            }).then(function(url) {
+                image.src = url;
             });
         });
     });
