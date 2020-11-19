@@ -1,0 +1,3 @@
+img/*
+!img/README.md
+php/token.txt

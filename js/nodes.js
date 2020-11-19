@@ -2,6 +2,9 @@ function toSentenceCase(str) {
     return str.slice(0, 1).toUpperCase() + str.slice(1, str.length)
 }
 
+let token = new URL(window.location.href).searchParams.get("token");
+let rawUrl = location.protocol + '//' + location.host + location.pathname;
+
 // -1: Display all anime names
 // 0: Display an anime
 let currentDisplay = -1;
@@ -226,7 +229,6 @@ function createNetwork(argNodes, argEdges) {
                 animeName = toSentenceCase(currentAnime);
                 str += toSentenceCase(key) + ":<br/>";
             }
-            console.log(animeName + " | " + characterName + " | " + myName);
             allElems[key].forEach(e => {
                 switch (e.linkType) {
                     case "pixiv": // Code from https://source.pixiv.net/source/embed.js
@@ -262,10 +264,10 @@ function createNetwork(argNodes, argEdges) {
         imageLinks.forEach(elem => {
             let image = document.getElementById('imageId-' + elem.imageId);
 
-            fetch("php/getImage.php?imageLink=" + elem.imageId + "&animeName=" + elem.anime + "&characterName=" + elem.c1 + "&characterName2=" + elem.c2).then(function(response) {
+            fetch("php/getImage.php?imageLink=" + elem.imageId + "&animeName=" + elem.anime + "&characterName=" + elem.c1 + "&characterName2=" + elem.c2 + "&token=" + token).then(function(response) {
                 return response.text();
             }).then(function(url) {
-                image.src = url;
+                image.src = rawUrl + url;
             });
         });
     });

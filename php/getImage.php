@@ -21,9 +21,16 @@ else
     );
     
     $folderName = __DIR__ . "/../img/" . $animeName;
-    $fileName = __DIR__ . "/../img/" . $animeName . "/" . $names . $format;
+    $fileName = __DIR__ . "/../img/" . $animeName . "/" . $names . "." . $format;
+
+    $canCreate = $_GET['token'] !== NULL && file_get_contents(__DIR__ . "/token.txt") === sha1($_GET['token']);
 
     if (!file_exists($folderName)) {
+        if (!$canCreate)
+        {
+            echo $imageLink;
+            return;
+        }
         if (!mkdir($folderName))
             {
                 $error = error_get_last();
@@ -34,7 +41,11 @@ else
     }
  
     if (!file_exists($fileName)) {
-
+        if (!$canCreate)
+        {
+            echo $imageLink;
+            return;
+        }
         $options = [
             "http" => [
                 "method" => "GET"
@@ -43,5 +54,5 @@ else
         $context = stream_context_create($options);
         file_put_contents($fileName, file_get_contents($_GET['imageLink'], false, $context));
     }
-    echo $fileName;
+    echo "img/" . $animeName . "/" . $names . "." . $format;
 }
