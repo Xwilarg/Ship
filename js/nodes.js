@@ -236,18 +236,19 @@ function createNetwork(argNodes, argEdges) {
                         break;
 
                     case "twitter":
-                        str += '<a href="' + e.link + '" target="_blank"><img id="imageId-' + e.imageId + '" src=""/></a>';
-                        imageLinks.push({imageId: 'https://pbs.twimg.com/media/' + e.imageId + '?format=jpg', anime: animeName, c1: characterName, c2: myName});
+                        let fullId = 'https://pbs.twimg.com/media/' + e.imageId + '?format=jpg'
+                        str += '<a href="' + e.link + '" target="_blank"><img id="imageId-' + fullId + '" src=""/></a>';
+                        imageLinks.push({imageId: fullId, anime: animeName, c1: characterName, c2: myName, source: e.linkType});
                         break;
 
                     case "gelbooru": case "yandere": case "deviantart": case "shikotch":
                         str += '<a href="' + e.link + '" target="_blank"><img id="imageId-' + e.imageId + '" src=""/></a>';
-                        imageLinks.push({imageId: e.imageId, anime: animeName, c1: characterName, c2: myName});
+                        imageLinks.push({imageId: e.imageId, anime: animeName, c1: characterName, c2: myName, source: e.linkType});
                         break;
 
                     case "other":
                         str += '<img src="' + e.imageId + '"/>';
-                        imageLinks.push({imageId: e.imageId, anime: animeName, c1: characterName, c2: myName});
+                        imageLinks.push({imageId: e.imageId, anime: animeName, c1: characterName, c2: myName, source: e.linkType});
                         break;
 
                     default:
@@ -267,7 +268,20 @@ function createNetwork(argNodes, argEdges) {
             fetch("php/getImage.php?imageLink=" + elem.imageId + "&animeName=" + elem.anime + "&characterName=" + elem.c1 + "&characterName2=" + elem.c2 + "&token=" + token).then(function(response) {
                 return response.text();
             }).then(function(url) {
-                image.src = rawUrl + url;
+                if (url.startsWith("http")) {
+                    if (elem.source === "gelbooru" || elem.source === "other") {
+                        fetch("php/getUrlContent.php?url=" + url).then(function(response) {
+                            return response.blob();
+                        }).then(function(blob) {
+                            let objectURL = URL.createObjectURL(blob);
+                            image.src = objectURL;
+                        });
+                    } else {
+                        image.src = url;
+                    }
+                } else {
+                    image.src = rawUrl + url;
+                }
             });
         });
     });

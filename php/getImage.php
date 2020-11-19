@@ -54,5 +54,5 @@ else
         $context = stream_context_create($options);
         file_put_contents($fileName, file_get_contents($_GET['imageLink'], false, $context));
     }
-    echo "img/" . $animeName . "/" . $names . "." . $format;
+    echo str_replace(" ", "%20", "img/" . $animeName . "/" . $names . "." . $format);
 }
