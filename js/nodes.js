@@ -30,7 +30,9 @@ let namesToColor = {};
 
 let i = 0;
 
-let dir = "https://ship.zirk.eu/Ship_data/img/"
+var allAnimeNames = [];
+
+let dir = rawUrl + "/Ship_data/img/"
 
 function createNodes(text) {
     let jsons = JSON.parse(text);
@@ -38,6 +40,7 @@ function createNodes(text) {
     let y = 0;
     for (let json of jsons) {
         let name = json.name;
+        allAnimeNames.push(name);
         let color = json.color;
 
         let nodes = [];
@@ -77,7 +80,34 @@ function createNodes(text) {
         idsSeries[name] = y;
         y++;
     }
+
+    new autoComplete({
+        selector: 'input[id="autoComplete"]',
+        minChars: 1,
+        source: function(term, suggest){
+            term = term.toLowerCase();
+            var choices = allAnimeNames;
+            var matches = [];
+            for (i = 0; i < choices.length; i++)
+            {
+                if (~choices[i].toLowerCase().indexOf(term))
+                    matches.push(choices[i]);
+            }
+            suggest(matches);
+        }
+    });
 }
+
+document.getElementById("inputButton").addEventListener("click", function() {
+    currentDisplay = 0;
+    let current = document.getElementById("autoComplete").value;
+    let item = Object.keys(idsSeries).find(key => key === current);
+    document.getElementById("autoComplete").value = "";
+    if (item === undefined)
+        return;
+    currentAnime = current;
+    createNetwork(arrNodes[currentAnime], arrEdges[currentAnime]);
+});
 
 function createCrossoverNodes(text) {
     let json = JSON.parse(text);
@@ -292,6 +322,7 @@ function createNetwork(argNodes, argEdges) {
 function loadData(name) {
     document.getElementById("hidden-container").hidden = true;
     document.getElementById("nodes").hidden = false;
+    document.getElementById("input").hidden = false;
 
     let http = new XMLHttpRequest();
     http.open("GET", "php/getJson.php?folder=" + name, false);

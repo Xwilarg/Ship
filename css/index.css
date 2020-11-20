@@ -129,3 +129,24 @@ img {
 #intro-wrapper button:hover {
     background-color: #f9f9f9;
 }
+
+#input {
+    text-align: center;
+    background-color: #fff;
+    border-radius: 4px;
+    width: 80%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin: auto;
+}
+
+input {
+    box-sizing: border-box;
+    border: 1px solid #555;
+    outline: none;
+    padding: 4px;
+}
+
+#input > button {
+    padding: 4px;
+}

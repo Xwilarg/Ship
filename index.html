@@ -6,6 +6,7 @@
         <meta name="description" content="Display the differents community made ships between characters from an anime"/>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
         <link rel="stylesheet" type="text/css" href="css/index.css">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.min.css">
     </head>
     <body>
         <h1>Ship</h1>
@@ -41,6 +42,11 @@
                 </div>
             </div>
         </div>
+        <br/>
+        <div id="input" hidden>
+            Search anime: <input id="autoComplete" type="text" tabindex="1"/>
+            <button id="inputButton">OK</button>
+        </div>
         <div id="infos"></div>
         <hr/>
         <p id="userInfo">
@@ -52,5 +58,6 @@
     <footer>
         This website is a work in progress... GitHub: <a href="https://github.com/Xwilarg/Ship">https://github.com/Xwilarg/Ship</a>
         <script type="text/javascript" src="js/nodes.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.min.js"></script>
     </footer>
 </html>
