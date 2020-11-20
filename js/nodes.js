@@ -229,6 +229,7 @@ function createNetwork(argNodes, argEdges) {
                 animeName = toSentenceCase(currentAnime);
                 str += toSentenceCase(key) + ":<br/>";
             }
+            let index = 1;
             allElems[key].forEach(e => {
                 switch (e.linkType) {
                     case "pixiv": // Code from https://source.pixiv.net/source/embed.js
@@ -238,17 +239,17 @@ function createNetwork(argNodes, argEdges) {
                     case "twitter":
                         let fullId = 'https://pbs.twimg.com/media/' + e.imageId + '?format=jpg'
                         str += '<a href="' + e.link + '" target="_blank"><img id="imageId-' + fullId + '" src=""/></a>';
-                        imageLinks.push({imageId: fullId, anime: animeName, c1: characterName, c2: myName, source: e.linkType});
+                        imageLinks.push({imageId: fullId, anime: animeName, c1: characterName, c2: myName, source: e.linkType, index: index});
                         break;
 
                     case "gelbooru": case "yandere": case "deviantart": case "shikotch":
                         str += '<a href="' + e.link + '" target="_blank"><img id="imageId-' + e.imageId + '" src=""/></a>';
-                        imageLinks.push({imageId: e.imageId, anime: animeName, c1: characterName, c2: myName, source: e.linkType});
+                        imageLinks.push({imageId: e.imageId, anime: animeName, c1: characterName, c2: myName, source: e.linkType, index: index});
                         break;
 
                     case "other":
                         str += '<img src="' + e.imageId + '"/>';
-                        imageLinks.push({imageId: e.imageId, anime: animeName, c1: characterName, c2: myName, source: e.linkType});
+                        imageLinks.push({imageId: e.imageId, anime: animeName, c1: characterName, c2: myName, source: e.linkType, index: index});
                         break;
 
                     default:
@@ -257,15 +258,16 @@ function createNetwork(argNodes, argEdges) {
                         break;
                 }
                 str += "<br/>";
+                index++;
             });
-            str += "<br/>"
+            str += "<br/>";
         }
         document.getElementById("infos").innerHTML = str;
 
         imageLinks.forEach(elem => {
             let image = document.getElementById('imageId-' + elem.imageId);
 
-            fetch("php/getImage.php?imageLink=" + elem.imageId + "&animeName=" + elem.anime + "&characterName=" + elem.c1 + "&characterName2=" + elem.c2 + "&token=" + token).then(function(response) {
+            fetch("php/getImage.php?imageLink=" + elem.imageId + "&animeName=" + elem.anime + "&characterName=" + elem.c1 + "&characterName2=" + elem.c2 + "&token=" + token + "&index=" + elem.index).then(function(response) {
                 return response.text();
             }).then(function(url) {
                 if (url.startsWith("http")) {

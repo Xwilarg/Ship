@@ -14,7 +14,8 @@ else
     $characterName = $_GET['characterName'];
     $characterName2 = $_GET['characterName2'];
     $imageLink = $_GET['imageLink'];
-    $names = $characterName < $characterName2 ? ($characterName . "_" . $characterName2)  : ($characterName2 . "_" . $characterName);
+    $index = $_GET["index"];
+    $names = ($characterName < $characterName2 ? ($characterName . "_" . $characterName2)  : ($characterName2 . "_" . $characterName)) . "-" . $index;
     $format = substr($_GET['imageLink'], -4) === "=jpg" ? "jpg" : pathinfo(
         parse_url($_GET['imageLink'], PHP_URL_PATH), 
         PATHINFO_EXTENSION
