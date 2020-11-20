@@ -76,7 +76,8 @@ function createNodes(text) {
             for (key2 in json.ships[key]) {
                 let color1 = getColor(name, key);
                 let color2 = getColor(name, key2);
-                edges.push({from: allIds[name + "_" + key], to: allIds[name + "_" + key2], width: 4, selectionWidth: 6, color: { color: color1 != color2 ? "#a660a0" : color1 }});
+                var finalColor = color1 != color2 ? "#a660a0" : color1;
+                edges.push({from: allIds[name + "_" + key], to: allIds[name + "_" + key2], width: 4, selectionWidth: 6, color: { color: finalColor, highlight: finalColor}});
             }
         }
 
