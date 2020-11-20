@@ -261,25 +261,28 @@ function createNetwork(argNodes, argEdges) {
             }
             let index = 1;
             allElems[key].forEach(e => {
+                let fullId;
                 switch (e.linkType) {
                     case "pixiv": // Code from https://source.pixiv.net/source/embed.js
-                        str += '<a href="' + e.link + '" target="_blank"><iframe src="https://embed.pixiv.net/embed_mk2.php?id=' + /artworks\/([0-9]+)/.exec(e.link)[1] + '&size=medium&border=off" width="360" height="165" frameborder="0" style="vertical-align:middle; border:none;"></iframe></a>'
+                        fullId = 'https://embed.pixiv.net/embed_mk2.php?id=' + /artworks\/([0-9]+)/.exec(e.link)[1];
+                        str += '<a id="a-' + fullId + '" href="' + e.link + '" target="_blank"><img id="imageId-' + fullId + '" src=""/></a>';
+                        imageLinks.push({imageId: fullId, anime: animeName, c1: characterName, c2: myName, source: e.linkType, index: index, isPixiv: true});
                         break;
 
                     case "twitter":
-                        let fullId = 'https://pbs.twimg.com/media/' + e.imageId + '?format=jpg'
+                        fullId = 'https://pbs.twimg.com/media/' + e.imageId + '?format=jpg'
                         str += '<a href="' + e.link + '" target="_blank"><img id="imageId-' + fullId + '" src=""/></a>';
-                        imageLinks.push({imageId: fullId, anime: animeName, c1: characterName, c2: myName, source: e.linkType, index: index});
+                        imageLinks.push({imageId: fullId, anime: animeName, c1: characterName, c2: myName, source: e.linkType, index: index, isPixiv: false});
                         break;
 
                     case "gelbooru": case "yandere": case "deviantart": case "shikotch":
                         str += '<a href="' + e.link + '" target="_blank"><img id="imageId-' + e.imageId + '" src=""/></a>';
-                        imageLinks.push({imageId: e.imageId, anime: animeName, c1: characterName, c2: myName, source: e.linkType, index: index});
+                        imageLinks.push({imageId: e.imageId, anime: animeName, c1: characterName, c2: myName, source: e.linkType, index: index, isPixiv: false});
                         break;
 
                     case "other":
                         str += '<img src="' + e.imageId + '"/>';
-                        imageLinks.push({imageId: e.imageId, anime: animeName, c1: characterName, c2: myName, source: e.linkType, index: index});
+                        imageLinks.push({imageId: e.imageId, anime: animeName, c1: characterName, c2: myName, source: e.linkType, index: index, isPixiv: false});
                         break;
 
                     default:
@@ -297,7 +300,7 @@ function createNetwork(argNodes, argEdges) {
         imageLinks.forEach(elem => {
             let image = document.getElementById('imageId-' + elem.imageId);
 
-            fetch("php/getImage.php?imageLink=" + elem.imageId + "&animeName=" + elem.anime + "&characterName=" + elem.c1 + "&characterName2=" + elem.c2 + "&token=" + token + "&index=" + elem.index).then(function(response) {
+            fetch("php/getImage.php?imageLink=" + elem.imageId + "&animeName=" + elem.anime + "&characterName=" + elem.c1 + "&characterName2=" + elem.c2 + "&token=" + token + "&index=" + elem.index + "&isPixiv=" + elem.isPixiv).then(function(response) {
                 return response.text();
             }).then(function(url) {
                 if (url.startsWith("http")) {
@@ -308,6 +311,8 @@ function createNetwork(argNodes, argEdges) {
                             let objectURL = URL.createObjectURL(blob);
                             image.src = objectURL;
                         });
+                    } else if (elem.source == "pixiv") {
+                        document.getElementById('a-' + elem.imageId).innerHTML = '<iframe src="' + elem.imageId + '&size=medium&border=off" width="360" height="165" frameborder="0" style="vertical-align:middle; border:none;"></iframe>';
                     } else {
                         image.src = url;
                     }
