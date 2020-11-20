@@ -281,7 +281,7 @@ function createNetwork(argNodes, argEdges) {
                         break;
 
                     case "other":
-                        str += '<img src="' + e.imageId + '"/>';
+                        str += '<img id="imageId-' + e.imageId + '" src="' + e.imageId + '"/>';
                         imageLinks.push({imageId: e.imageId, anime: animeName, c1: characterName, c2: myName, source: e.linkType, index: index, isPixiv: false});
                         break;
 
