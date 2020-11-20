@@ -33,12 +33,10 @@ else
             return;
         }
         if (!mkdir($folderName))
-            {
-                $error = error_get_last();
-                echo $error['message'];
-                http_response_code(500);
-                return;
-            }
+        {
+            echo $imageLink;
+            return;
+        }
     }
  
     if (!file_exists($fileName)) {
