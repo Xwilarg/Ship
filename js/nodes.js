@@ -26,13 +26,23 @@ let crossoverJson;
 
 let currentAnime; // Currently displayed anime
 
-let namesToColor = {};
-
 let i = 0;
 
 var allAnimeNames = [];
 
-let dir = rawUrl + "/Ship_data/img/"
+let dir = rawUrl + "/Ship_data/img/";
+
+let infoJson = undefined;
+
+function getColor(animeName, characterName) {
+    if (infoJson === undefined) {
+        return "yellow";
+    }
+    if (infoJson[animeName].hasOwnProperty(characterName) && infoJson[animeName][characterName].includes("male")) {
+        return "lightblue";
+    }
+    return "lightpink";
+}
 
 function createNodes(text) {
     let jsons = JSON.parse(text);
@@ -41,13 +51,12 @@ function createNodes(text) {
     for (let json of jsons) {
         let name = json.name;
         allAnimeNames.push(name);
-        let color = json.color;
 
         let nodes = [];
         let edges = [];
         // Add all characters to id list (+ draw nodes)
         for (key in json.ships) {
-            nodes.push({ id: i, label: toSentenceCase(key), color: color, shape: "circularImage", image: dir + name + "/" + key + ".png" });
+            nodes.push({ id: i, label: toSentenceCase(key), color: getColor(name, key), shape: "circularImage", image: dir + name + "/" + key + ".png" });
             allIds[name + "_" + key] = i;
             i++;
         }
@@ -55,7 +64,7 @@ function createNodes(text) {
         for (key in json.ships) {
             for (key2 in json.ships[key]) {
                 if (allIds[name + "_" + key2] === undefined) {
-                    nodes.push({ id: i, label: toSentenceCase(key2), color: color, shape: "circularImage", image: dir + name + "/" + key2 + ".png" });
+                    nodes.push({ id: i, label: toSentenceCase(key2), color: getColor(name, key2), shape: "circularImage", image: dir + name + "/" + key2 + ".png" });
                     allIds[name + "_" + key2] = i;
                     i++;
                 }
@@ -65,7 +74,9 @@ function createNodes(text) {
         // Draw edges
         for (key in json.ships) {
             for (key2 in json.ships[key]) {
-                edges.push({from: allIds[name + "_" + key], to: allIds[name + "_" + key2], width: 4, selectionWidth: 6});
+                let color1 = getColor(name, key);
+                let color2 = getColor(name, key2);
+                edges.push({from: allIds[name + "_" + key], to: allIds[name + "_" + key2], width: 4, selectionWidth: 6, color: { color: color1 != color2 ? "#a660a0" : color1 }});
             }
         }
 
@@ -73,10 +84,9 @@ function createNodes(text) {
         arrEdges[name] = edges;
 
         allJsons[name] = json;
-        namesToColor[name] = color;
 
         // Get series infos
-        nodesSeries.push({ id: y, label: toSentenceCase(name), color: color });
+        nodesSeries.push({ id: y, label: toSentenceCase(name), color: "lightgrey" });
         idsSeries[name] = y;
         y++;
     }
@@ -125,19 +135,19 @@ function createCrossoverNodes(text) {
             }
 
             if (alreadyNames[id1] === undefined || !alreadyNames[id1].includes(allIds[key2])) {
-                arrNodes[id1].push({ id: allIds[key2], label: toSentenceCase(key2.split('_')[1]) + " (" + id2 + ")", color: namesToColor[id2], shape: "circularImage", image: dir + id2 + "/" + key2.split('_')[1] + ".png" });
+                arrNodes[id1].push({ id: allIds[key2], label: toSentenceCase(key2.split('_')[1]) + " (" + id2 + ")", color: "grey", shape: "circularImage", image: dir + id2 + "/" + key2.split('_')[1] + ".png" });
                 if (alreadyNames[id1] === undefined)
                     alreadyNames[id1] = [];
                 alreadyNames[id1].push(allIds[key2]);
             }
             if (alreadyNames[id2] === undefined || !alreadyNames[id2].includes(allIds[key])) {
-                arrNodes[id2].push({ id: allIds[key], label: toSentenceCase(key.split('_')[1]) + " (" + id1 + ")", color: namesToColor[id1], shape: "circularImage", image: dir + id1 + "/" + key.split('_')[1] + ".png" });
+                arrNodes[id2].push({ id: allIds[key], label: toSentenceCase(key.split('_')[1]) + " (" + id1 + ")", color: "grey", shape: "circularImage", image: dir + id1 + "/" + key.split('_')[1] + ".png" });
                 if (alreadyNames[id2] === undefined)
                     alreadyNames[id2] = [];
                 alreadyNames[id2].push(allIds[key]);
             }
-            arrEdges[id1].push({from: allIds[key], to: allIds[key2], width: 4, selectionWidth: 6, color: { color: namesToColor[id2] }});
-            arrEdges[id2].push({from: allIds[key], to: allIds[key2], width: 4, selectionWidth: 6, color: { color: namesToColor[id1] }});
+            arrEdges[id1].push({from: allIds[key], to: allIds[key2], width: 4, selectionWidth: 6, color: { color: "grey" }});
+            arrEdges[id2].push({from: allIds[key], to: allIds[key2], width: 4, selectionWidth: 6, color: { color: "grey" }});
 
             if (!ids.includes(id1 + " " + id2)) {
                 ids.push(id1 + " " + id2);
@@ -330,18 +340,29 @@ function loadData(name) {
     document.getElementById("input").hidden = false;
 
     let http = new XMLHttpRequest();
-    http.open("GET", "php/getJson.php?folder=" + name, false);
+    http.open("GET", "php/getInfoJson.php?folder=" + name, false);
     http.onreadystatechange = function ()
     {
         if (this.readyState === 4 && this.status === 200) {
-            createNodes(this.responseText);
+            if (this.responseText !== "") {
+                infoJson = JSON.parse(this.responseText);
+            }
 
-            http = new XMLHttpRequest();
-            http.open("GET", "php/getCrossoverJson.php?folder=" + name, false);
+            http.open("GET", "php/getJson.php?folder=" + name, false);
             http.onreadystatechange = function ()
             {
                 if (this.readyState === 4 && this.status === 200) {
-                    createCrossoverNodes(this.responseText);
+                    createNodes(this.responseText);
+
+                    http = new XMLHttpRequest();
+                    http.open("GET", "php/getCrossoverJson.php?folder=" + name, false);
+                    http.onreadystatechange = function ()
+                    {
+                        if (this.readyState === 4 && this.status === 200) {
+                            createCrossoverNodes(this.responseText);
+                        }
+                    };
+                    http.send(null);
                 }
             };
             http.send(null);
