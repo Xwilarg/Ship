@@ -92,12 +92,48 @@ function createNodes(text) {
         y++;
     }
 
+    // Search
     new autoComplete({
         selector: 'input[id="autoCompleteAnime"]',
         minChars: 1,
+        source: autoSuggestionAnime
+    });
+
+    // Links
+    new autoComplete({
+        selector: 'input[id="autoCompleteAnime1"]',
+        minChars: 1,
+        source: autoSuggestionAnime
+    });
+
+    new autoComplete({
+        selector: 'input[id="autoCompleteAnime2"]',
+        minChars: 1,
+        source: autoSuggestionAnime
+    });
+
+    new autoComplete({
+        selector: 'input[id="autoCompleteCharacter1"]',
+        minChars: 1,
         source: function(term, suggest){
             term = term.toLowerCase();
-            var choices = allAnimeNames;
+            var choices = Object.keys(allJsons[document.getElementById("autoCompleteAnime1").value].ships);
+            var matches = [];
+            for (i = 0; i < choices.length; i++)
+            {
+                if (~choices[i].toLowerCase().indexOf(term))
+                    matches.push(choices[i]);
+            }
+            suggest(matches);
+        }
+    });
+
+    new autoComplete({
+        selector: 'input[id="autoCompleteCharacter2"]',
+        minChars: 1,
+        source: function(term, suggest){
+            term = term.toLowerCase();
+            var choices = Object.keys(allJsons[document.getElementById("autoCompleteAnime2").value].ships);
             var matches = [];
             for (i = 0; i < choices.length; i++)
             {
@@ -109,7 +145,19 @@ function createNodes(text) {
     });
 }
 
-document.getElementById("inputButton").addEventListener("click", function() {
+function autoSuggestionAnime(term, suggest){
+    term = term.toLowerCase();
+    var choices = allAnimeNames;
+    var matches = [];
+    for (i = 0; i < choices.length; i++)
+    {
+        if (~choices[i].toLowerCase().indexOf(term))
+            matches.push(choices[i]);
+    }
+    suggest(matches);
+}
+
+document.getElementById("inputButton").addEventListener("click", function() { // Search button
     currentDisplay = 0;
     let current = document.getElementById("autoCompleteAnime").value;
     let item = Object.keys(idsSeries).find(key => key === current);
@@ -118,6 +166,23 @@ document.getElementById("inputButton").addEventListener("click", function() {
         return;
     currentAnime = current;
     createNetwork(arrNodes[currentAnime], arrEdges[currentAnime]);
+});
+
+document.getElementById("inputButtonLink").addEventListener("click", function() { // Link button
+    let anime1 = document.getElementById("autoCompleteAnime1").value;
+    let anime2 = document.getElementById("autoCompleteAnime2").value;
+    let charac1 = document.getElementById("autoCompleteCharacter1").value;
+    let charac2 = document.getElementById("autoCompleteCharacter2").value;
+
+    // We start on the character "startNode" and we need to find the character "goalNode"
+    let startNode = allJsons[anime1].ships[charac1];
+    let goalNode = allJsons[anime2].ships[charac2];
+
+    let allNodes = [];
+    allNodes.push(Object.keys(startNode));
+
+    console.log(startNode);
+   // nodes.push({ id: i, label: toSentenceCase(key2), color: getColor(name, key2), shape: "circularImage", image: dir + name + "/" + key2 + ".png" });
 });
 
 function createCrossoverNodes(text) {
