@@ -93,7 +93,7 @@ function createNodes(text) {
     }
 
     new autoComplete({
-        selector: 'input[id="autoComplete"]',
+        selector: 'input[id="autoCompleteAnime"]',
         minChars: 1,
         source: function(term, suggest){
             term = term.toLowerCase();
@@ -111,9 +111,9 @@ function createNodes(text) {
 
 document.getElementById("inputButton").addEventListener("click", function() {
     currentDisplay = 0;
-    let current = document.getElementById("autoComplete").value;
+    let current = document.getElementById("autoCompleteAnime").value;
     let item = Object.keys(idsSeries).find(key => key === current);
-    document.getElementById("autoComplete").value = "";
+    document.getElementById("autoCompleteAnime").value = "";
     if (item === undefined)
         return;
     currentAnime = current;

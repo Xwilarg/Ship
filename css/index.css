@@ -150,3 +150,7 @@ input {
 #input > button {
     padding: 4px;
 }
+
+#input p {
+    font-size: 12px;
+}

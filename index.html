@@ -23,11 +23,15 @@
                     </p>
                 </div>
                 <div id="right">
-                    <button onclick="loadData('gelbooru')">Gelbooru</button>
+                    <!--<button onclick="loadData('gelbooru')">Gelbooru</button>
                     <p>
                         All data are taken from Gelbooru using a script<br/>
                         This means way more characters but the end result is a bit more messy
                         <div>Not Recommanded!</div>
+                    </p>-->
+                    <p>
+                        Gelbooru is temporarly disabled.<br/>
+                        Please use custom files instead.
                     </p>
                 </div>
             </div>
@@ -44,8 +48,13 @@
         </div>
         <br/>
         <div id="input" hidden>
-            Search anime: <input id="autoComplete" type="text" tabindex="1"/>
+            <h3>Quick search</h3>
+            <p>
+                Just write the name of the anime, no space, no special characters, just letters
+            </p>
+            Anime name: <input id="autoCompleteAnime" type="text" tabindex="1"/>
             <button id="inputButton">OK</button>
+            <hr/>
         </div>
         <div id="infos"></div>
         <hr/>
