@@ -38,13 +38,13 @@ footer {
 #nodes {
     position: relative;
     width: 80vw;
-    height: 750px;
+    height: 40vw;
     margin: auto;
 }
 
 #network {
     width: 80vw;
-    height: 60vw;
+    height: 40vw;
     border: black 1px solid;
 }
 
