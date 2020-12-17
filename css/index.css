@@ -37,14 +37,14 @@ footer {
 
 #nodes {
     position: relative;
-    width: 1500px;
+    width: 80vw;
     height: 750px;
     margin: auto;
 }
 
 #network {
-    width: 1500px;
-    height: 750px;
+    width: 80vw;
+    height: 60vw;
     border: black 1px solid;
 }
 
@@ -55,7 +55,7 @@ img {
 #outerBorder {
     position: relative;
     top: 312px;
-    width: 1000px;
+    width: 60vw;
     height: 50px;
     margin: auto;
     background: linear-gradient(
@@ -70,14 +70,14 @@ img {
 #loadingBar {
     position: absolute;
     top: 0;
-    left: 250px;
+    left: 10vw;
 }
   
 #border {
     position: absolute;
     top: 10px;
     left: 25px;
-    width: 940px;
+    width: 55vw;
     height: 25px;
     margin: auto;
     border-radius: 10px;
@@ -97,11 +97,11 @@ img {
 #left {
     width: 50%;
     float: left;
+    border-right: 1px solid black;
 }
 
 #right {
     margin-left: 50%;
-    border-left: 1px solid black;
 }
 
 #right div {
@@ -110,7 +110,8 @@ img {
 }
 
 #intro-wrapper {
-    width: 80%;
+    width: 80vw;
+    height: 7em;
     margin: auto;
     text-align: center;
     border-radius: 4px;
