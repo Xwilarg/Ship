@@ -250,6 +250,9 @@ document.getElementById("inputButtonLink").addEventListener("click", function() 
     let allNodes = [];
     let allLinks = [];
     let route = getFastestRoute(anime1, anime2, charac1, charac2);
+
+    currentDisplay = -2;
+
     let id = 0;
     let lastColor;
     let currColor = undefined;
@@ -341,6 +344,9 @@ function createNetwork(argNodes, argEdges) {
 
     // When we click on a node
     network.on("selectNode", function(node) {
+        if (currentDisplay === -2) { // Link thing
+            return;
+        }
         if (currentDisplay === -1) { // Go inside a node
             currentDisplay = 0;
             let id = Object.keys(idsSeries).find(key => idsSeries[key] === node.nodes[0]);
