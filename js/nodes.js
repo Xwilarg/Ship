@@ -86,7 +86,7 @@ function createNodes(text) {
             for (key2 in json.ships[key]) {
                 let color1 = getColor(name, key);
                 let color2 = getColor(name, key2);
-                var finalColor = color1 != color2 ? "#a660a0" : color1;
+                let finalColor = color1 != color2 ? "#a660a0" : color1;
                 edges.push({from: allIds[name + "_" + key], to: allIds[name + "_" + key2], width: 4, selectionWidth: 6, color: { color: finalColor, highlight: finalColor}});
 
                 addCharacterLink(name + "_" + key, name + "_" + key2);
@@ -180,21 +180,91 @@ document.getElementById("inputButton").addEventListener("click", function() { //
     createNetwork(arrNodes[currentAnime], arrEdges[currentAnime]);
 });
 
+function getFastestRoute(anime1, anime2, charac1, charac2) {
+    // We start on the character "startNode" and we need to find the character "goalNode"
+    let startNode = characterLinks[anime1 + "_" + charac1];
+    let goalNode = anime2 + "_" + charac2;
+    if (characterLinks[goalNode] === undefined)
+        return undefined;
+
+    let allLinks = {};
+
+    let i = 0;
+    startNode.forEach((e) => {
+        allLinks[i] = [anime1 + "_" + charac1, e];
+        i++;
+    });
+    let finalId = -1;
+    while (true) {
+        i = 0;
+        let tmp = {};
+        for(var key in allLinks)
+            tmp[key] = allLinks[key].slice();
+        let currLength = Object.keys(allLinks).length;
+        Object.keys(allLinks).map(function(key) {
+            return allLinks[key];
+        }).forEach((eArr) => {
+            let e = eArr[eArr.length - 1];
+            let isFirst = true;
+            characterLinks[e].forEach((e2) => {
+                if (!eArr.includes(e2)) { // Character already in link
+                    if (isFirst) {
+                        tmp[i].push(e2);
+                        if (e2 == goalNode) {
+                            finalId = i;
+                            return;
+                        }
+                        isFirst = false;
+                    } else {
+                        tmp[currLength] = allLinks[i].slice();
+                        tmp[currLength].push(e2);
+                        if (e2 == goalNode) {
+                            finalId = currLength;
+                            return;
+                        }
+                        currLength++;
+                    }
+                }
+            });
+            i++;
+        });
+        allLinks = tmp;
+        if (finalId != -1)
+            break;
+    }
+    return allLinks[finalId];
+}
+
 document.getElementById("inputButtonLink").addEventListener("click", function() { // Link button
     let anime1 = document.getElementById("autoCompleteAnime1").value;
     let anime2 = document.getElementById("autoCompleteAnime2").value;
     let charac1 = document.getElementById("autoCompleteCharacter1").value;
     let charac2 = document.getElementById("autoCompleteCharacter2").value;
 
-    // We start on the character "startNode" and we need to find the character "goalNode"
-    let startNode = allJsons[anime1].ships[charac1];
-    let goalNode = allJsons[anime2].ships[charac2];
+    if (anime1 === "" || anime2 === "" || charac1 === "" || charac2 === "")
+        return;
+
+    if (anime1 === anime2 && charac1 == charac2)
+        return;
 
     let allNodes = [];
-    allNodes.push(Object.keys(startNode));
-
-    console.log(startNode);
-   // nodes.push({ id: i, label: toSentenceCase(key2), color: getColor(name, key2), shape: "circularImage", image: dir + name + "/" + key2 + ".png" });
+    let allLinks = [];
+    let route = getFastestRoute(anime1, anime2, charac1, charac2);
+    let id = 0;
+    let lastColor;
+    let currColor = undefined;
+    route.forEach((e) => {
+        let s = e.split('_');
+        lastColor = currColor;
+        currColor = getColor(s[0], s[1]);
+        allNodes.push({ id: id, label: toSentenceCase(e), color: currColor, shape: "circularImage", image: dir + s[0] + "/" + s[1] + ".png" });
+        if (id !== 0) {
+            let finalColor = currColor != lastColor ? "#a660a0" : currColor;
+            allLinks.push({from: id - 1, to: id, width: 4, selectionWidth: 6, color: { color: finalColor, highlight: finalColor}});
+        }
+        id++;
+    });
+    createNetwork(allNodes, allLinks);
 });
 
 function createCrossoverNodes(text) {
