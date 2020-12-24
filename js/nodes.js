@@ -258,18 +258,22 @@ document.getElementById("inputButtonLink").addEventListener("click", function() 
     let id = 0;
     let lastColor;
     let currColor = undefined;
-    route.forEach((e) => {
-        let s = e.split('_');
+    for (let i = 0; i < route.length; i++) {
+        let curr = route[i];
+        let s = curr.split('_');
         lastColor = currColor;
         currColor = getColor(s[0], s[1]);
-        nodeLinks[id] = e;
-        allNodes.push({ id: id, label: toSentenceCase(e), color: currColor, shape: "circularImage", image: dir + s[0] + "/" + s[1] + ".png" });
+        let array = [];
+        if (i > 0) array.push(route[i - 1]);
+        else if (i < route.length - 1) array.push(route[i + 1]);
+        nodeLinks[id] = { id: curr, related: array };
+        allNodes.push({ id: id, label: toSentenceCase(curr), color: currColor, shape: "circularImage", image: dir + s[0] + "/" + s[1] + ".png" });
         if (id !== 0) {
             let finalColor = currColor != lastColor ? "#a660a0" : currColor;
             allLinks.push({from: id - 1, to: id, width: 4, selectionWidth: 6, color: { color: finalColor, highlight: finalColor}});
         }
         id++;
-    });
+    }
     createNetwork(allNodes, allLinks);
 });
 
@@ -355,8 +359,9 @@ function createNetwork(argNodes, argEdges) {
             return;
         }
         let id;
+        let currLink = currentDisplay === -2 ? nodeLinks[node.nodes[0]] : undefined;
         if (currentDisplay === -2) // Links
-            id = nodeLinks[node.nodes[0]];
+            id = currLink.id;
         else
             id = Object.keys(allIds).find(key => allIds[key] === node.nodes[0]);
         if (currentDisplay !== -2 && id.split('_')[0] != currentAnime) {
@@ -367,7 +372,7 @@ function createNetwork(argNodes, argEdges) {
         let localJson = allJsons[id.split('_')[0]];
         for (key in localJson.ships) {
             for (key2 in localJson.ships[key]) {
-                if (localJson.name + "_" + key2 == id) {
+                if (localJson.name + "_" + key2 == id && (currLink === undefined || currLink.related.includes(localJson.name + "_" + key))) {
                     if (allElems[key] === undefined) {
                         allElems[key] = [];
                     }
@@ -376,7 +381,7 @@ function createNetwork(argNodes, argEdges) {
                     });
                 }
             }
-            if (localJson.name + "_" + key == id) {
+            if (localJson.name + "_" + key == id && (currLink === undefined || currLink.related.includes(localJson.name + "_" + key2))) {
                 for (key2 in localJson.ships[key]) {
                     if (allElems[key2] === undefined) {
                         allElems[key2] = [];
@@ -389,7 +394,7 @@ function createNetwork(argNodes, argEdges) {
         }
         for (key in crossoverJson.ships) {
             for (key2 in crossoverJson.ships[key]) {
-                if (key2 == id) {
+                if (key2 == id && (currLink === undefined || currLink.related.includes(key))) {
                     if (allElems[key] === undefined) {
                         allElems[key] = [];
                     }
@@ -398,7 +403,7 @@ function createNetwork(argNodes, argEdges) {
                     });
                 }
             }
-            if (key == id) {
+            if (key == id && (currLink === undefined || currLink.related.includes(key2))) {
                 for (key2 in crossoverJson.ships[key]) {
                     if (allElems[key2] === undefined) {
                         allElems[key2] = [];
