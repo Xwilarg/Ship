@@ -235,6 +235,8 @@ function getFastestRoute(anime1, anime2, charac1, charac2) {
     return allLinks[finalId];
 }
 
+let nodeLinks = {};
+
 document.getElementById("inputButtonLink").addEventListener("click", function() { // Link button
     let anime1 = document.getElementById("autoCompleteAnime1").value;
     let anime2 = document.getElementById("autoCompleteAnime2").value;
@@ -260,6 +262,7 @@ document.getElementById("inputButtonLink").addEventListener("click", function() 
         let s = e.split('_');
         lastColor = currColor;
         currColor = getColor(s[0], s[1]);
+        nodeLinks[id] = e;
         allNodes.push({ id: id, label: toSentenceCase(e), color: currColor, shape: "circularImage", image: dir + s[0] + "/" + s[1] + ".png" });
         if (id !== 0) {
             let finalColor = currColor != lastColor ? "#a660a0" : currColor;
@@ -344,9 +347,6 @@ function createNetwork(argNodes, argEdges) {
 
     // When we click on a node
     network.on("selectNode", function(node) {
-        if (currentDisplay === -2) { // Link thing
-            return;
-        }
         if (currentDisplay === -1) { // Go inside a node
             currentDisplay = 0;
             let id = Object.keys(idsSeries).find(key => idsSeries[key] === node.nodes[0]);
@@ -354,8 +354,12 @@ function createNetwork(argNodes, argEdges) {
             createNetwork(arrNodes[currentAnime], arrEdges[currentAnime]);
             return;
         }
-        let id = Object.keys(allIds).find(key => allIds[key] === node.nodes[0]);
-        if (id.split('_')[0] != currentAnime) {
+        let id;
+        if (currentDisplay === -2) // Links
+            id = nodeLinks[node.nodes[0]];
+        else
+            id = Object.keys(allIds).find(key => allIds[key] === node.nodes[0]);
+        if (currentDisplay !== -2 && id.split('_')[0] != currentAnime) {
             currentAnime = id.split('_')[0];
             createNetwork(arrNodes[currentAnime], arrEdges[currentAnime]);
         }
@@ -368,7 +372,7 @@ function createNetwork(argNodes, argEdges) {
                         allElems[key] = [];
                     }
                     localJson.ships[key][key2].forEach(e => {
-                        allElems[key].push({link: e.link, linkType: e.linkType, imageId: e.imageId});
+                        allElems[key].push({link: e.link, linkType: e.linkType, imageId: e.imageId, anime: localJson.name});
                     });
                 }
             }
@@ -378,7 +382,7 @@ function createNetwork(argNodes, argEdges) {
                         allElems[key2] = [];
                     }
                     localJson.ships[key][key2].forEach(e => {
-                        allElems[key2].push({link: e.link, linkType: e.linkType, imageId: e.imageId});
+                        allElems[key2].push({link: e.link, linkType: e.linkType, imageId: e.imageId, anime: localJson.name});
                     });
                 }
             }
@@ -422,7 +426,7 @@ function createNetwork(argNodes, argEdges) {
             else
             {
                 characterName = toSentenceCase(key);
-                animeName = toSentenceCase(currentAnime);
+                animeName = toSentenceCase(allElems[key][0].anime);
                 str += toSentenceCase(key) + ":<br/>";
             }
             let index = 1;
