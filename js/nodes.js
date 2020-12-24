@@ -34,6 +34,8 @@ let dir = rawUrl + "/Ship_data/img/";
 
 let infoJson = undefined;
 
+let characterLinks = {}; // Easy way to get all characters and what they are linked to
+
 function getColor(animeName, characterName) {
     if (infoJson === undefined) {
         return "yellow";
@@ -42,6 +44,14 @@ function getColor(animeName, characterName) {
         return "lightblue";
     }
     return "lightpink";
+}
+
+function addCharacterLink(c1, c2) {
+    if (characterLinks[c1] === undefined) characterLinks[c1] = [];
+    if (characterLinks[c2] === undefined) characterLinks[c2] = [];
+
+    if (!characterLinks[c1].includes(c2)) characterLinks[c1].push(c2);
+    if (!characterLinks[c2].includes(c1)) characterLinks[c2].push(c1);
 }
 
 function createNodes(text) {
@@ -78,6 +88,8 @@ function createNodes(text) {
                 let color2 = getColor(name, key2);
                 var finalColor = color1 != color2 ? "#a660a0" : color1;
                 edges.push({from: allIds[name + "_" + key], to: allIds[name + "_" + key2], width: 4, selectionWidth: 6, color: { color: finalColor, highlight: finalColor}});
+
+                addCharacterLink(name + "_" + key, name + "_" + key2);
             }
         }
 
@@ -117,12 +129,12 @@ function createNodes(text) {
         minChars: 1,
         source: function(term, suggest){
             term = term.toLowerCase();
-            var choices = Object.keys(allJsons[document.getElementById("autoCompleteAnime1").value].ships);
+            var choices = Object.keys(characterLinks).filter(function(x) { return x.startsWith(document.getElementById("autoCompleteAnime1").value); });
             var matches = [];
             for (i = 0; i < choices.length; i++)
             {
                 if (~choices[i].toLowerCase().indexOf(term))
-                    matches.push(choices[i]);
+                    matches.push(choices[i].split('_')[1]);
             }
             suggest(matches);
         }
@@ -133,12 +145,12 @@ function createNodes(text) {
         minChars: 1,
         source: function(term, suggest){
             term = term.toLowerCase();
-            var choices = Object.keys(allJsons[document.getElementById("autoCompleteAnime2").value].ships);
+            var choices = Object.keys(characterLinks).filter(function(x) { return x.startsWith(document.getElementById("autoCompleteAnime2").value); });
             var matches = [];
             for (i = 0; i < choices.length; i++)
             {
                 if (~choices[i].toLowerCase().indexOf(term))
-                    matches.push(choices[i]);
+                    matches.push(choices[i].split('_')[1]);
             }
             suggest(matches);
         }
@@ -219,6 +231,8 @@ function createCrossoverNodes(text) {
                 ids.push(id1 + " " + id2);
                 edgesSeries.push({from: idsSeries[id1], to: idsSeries[id2], width: 4, selectionWidth: 6, color: { inherit: false }});
             }
+
+            addCharacterLink(key, key2);
         }
     }
 
