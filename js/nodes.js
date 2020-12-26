@@ -386,14 +386,17 @@ function createNetwork(argNodes, argEdges) {
                     });
                 }
             }
-            if (localJson.name + "_" + key == id && (currLink === undefined || currLink.related.includes(localJson.name + "_" + key2))) {
+            if (localJson.name + "_" + key == id) {
                 for (key2 in localJson.ships[key]) {
-                    if (allElems[key2] === undefined) {
-                        allElems[key2] = [];
+                    if (currLink === undefined || currLink.related.includes(localJson.name + "_" + key2))
+                    {
+                        if (allElems[key2] === undefined) {
+                            allElems[key2] = [];
+                        }
+                        localJson.ships[key][key2].forEach(e => {
+                            allElems[key2].push({link: e.link, linkType: e.linkType, imageId: e.imageId, anime: localJson.name});
+                        });
                     }
-                    localJson.ships[key][key2].forEach(e => {
-                        allElems[key2].push({link: e.link, linkType: e.linkType, imageId: e.imageId, anime: localJson.name});
-                    });
                 }
             }
         }
@@ -408,14 +411,16 @@ function createNetwork(argNodes, argEdges) {
                     });
                 }
             }
-            if (key == id && (currLink === undefined || currLink.related.includes(key2))) {
+            if (key == id) {
                 for (key2 in crossoverJson.ships[key]) {
-                    if (allElems[key2] === undefined) {
-                        allElems[key2] = [];
+                    if (currLink === undefined || currLink.related.includes(key2)) {
+                        if (allElems[key2] === undefined) {
+                            allElems[key2] = [];
+                        }
+                        crossoverJson.ships[key][key2].forEach(e => {
+                            allElems[key2].push({link: e.link, linkType: e.linkType, imageId: e.imageId});
+                        });
                     }
-                    crossoverJson.ships[key][key2].forEach(e => {
-                        allElems[key2].push({link: e.link, linkType: e.linkType, imageId: e.imageId});
-                    });
                 }
             }
         }
