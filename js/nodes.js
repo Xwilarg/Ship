@@ -180,7 +180,7 @@ document.getElementById("inputButton").addEventListener("click", function() { //
     createNetwork(arrNodes[currentAnime], arrEdges[currentAnime]);
 });
 
-function getFastestRoute(anime1, anime2, charac1, charac2) {
+function getFastestRoute(anime1, anime2, charac1, charac2, callback) {
     // We start on the character "startNode" and we need to find the character "goalNode"
     let startNode = characterLinks[anime1 + "_" + charac1];
     let goalNode = anime2 + "_" + charac2;
@@ -212,6 +212,7 @@ function getFastestRoute(anime1, anime2, charac1, charac2) {
                         tmp[i].push(e2);
                         if (e2 == goalNode) {
                             finalId = i;
+                            callback(tmp[i]);
                             return;
                         }
                         isFirst = false;
@@ -220,19 +221,23 @@ function getFastestRoute(anime1, anime2, charac1, charac2) {
                         tmp[currLength].push(e2);
                         if (e2 == goalNode) {
                             finalId = currLength;
+                            callback(tmp[currLength]);
                             return;
                         }
                         currLength++;
                     }
                 }
+                if (finalId !== -1)
+                    return;
             });
+            if (finalId !== -1)
+                return;
             i++;
         });
         allLinks = tmp;
         if (finalId != -1)
-            break;
+            return;
     }
-    return allLinks[finalId];
 }
 
 let nodeLinks = {};
@@ -251,30 +256,30 @@ document.getElementById("inputButtonLink").addEventListener("click", function() 
 
     let allNodes = [];
     let allLinks = [];
-    let route = getFastestRoute(anime1, anime2, charac1, charac2);
+    getFastestRoute(anime1, anime2, charac1, charac2, function(route) {
+        currentDisplay = -2;
 
-    currentDisplay = -2;
-
-    let id = 0;
-    let lastColor;
-    let currColor = undefined;
-    for (let i = 0; i < route.length; i++) {
-        let curr = route[i];
-        let s = curr.split('_');
-        lastColor = currColor;
-        currColor = getColor(s[0], s[1]);
-        let array = [];
-        if (i > 0) array.push(route[i - 1]);
-        else if (i < route.length - 1) array.push(route[i + 1]);
-        nodeLinks[id] = { id: curr, related: array };
-        allNodes.push({ id: id, label: toSentenceCase(curr), color: currColor, shape: "circularImage", image: dir + s[0] + "/" + s[1] + ".png" });
-        if (id !== 0) {
-            let finalColor = currColor != lastColor ? "#a660a0" : currColor;
-            allLinks.push({from: id - 1, to: id, width: 4, selectionWidth: 6, color: { color: finalColor, highlight: finalColor}});
+        let id = 0;
+        let lastColor;
+        let currColor = undefined;
+        for (let i = 0; i < route.length; i++) {
+            let curr = route[i];
+            let s = curr.split('_');
+            lastColor = currColor;
+            currColor = getColor(s[0], s[1]);
+            let array = [];
+            if (i > 0) array.push(route[i - 1]);
+            else if (i < route.length - 1) array.push(route[i + 1]);
+            nodeLinks[id] = { id: curr, related: array };
+            allNodes.push({ id: id, label: toSentenceCase(curr), color: currColor, shape: "circularImage", image: dir + s[0] + "/" + s[1] + ".png" });
+            if (id !== 0) {
+                let finalColor = currColor != lastColor ? "#a660a0" : currColor;
+                allLinks.push({from: id - 1, to: id, width: 4, selectionWidth: 6, color: { color: finalColor, highlight: finalColor}});
+            }
+            id++;
         }
-        id++;
-    }
-    createNetwork(allNodes, allLinks);
+        createNetwork(allNodes, allLinks);
+    });
 });
 
 function createCrossoverNodes(text) {
