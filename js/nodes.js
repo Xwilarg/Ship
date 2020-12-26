@@ -254,9 +254,9 @@ document.getElementById("inputButtonLink").addEventListener("click", function() 
     if (anime1 === anime2 && charac1 == charac2)
         return;
 
-    let allNodes = [];
-    let allLinks = [];
     getFastestRoute(anime1, anime2, charac1, charac2, function(route) {
+        let allNodes = [];
+        let allLinks = [];
         currentDisplay = -2;
 
         let id = 0;
@@ -269,7 +269,7 @@ document.getElementById("inputButtonLink").addEventListener("click", function() 
             currColor = getColor(s[0], s[1]);
             let array = [];
             if (i > 0) array.push(route[i - 1]);
-            else if (i < route.length - 1) array.push(route[i + 1]);
+            if (i < route.length - 1) array.push(route[i + 1]);
             nodeLinks[id] = { id: curr, related: array };
             allNodes.push({ id: id, label: toSentenceCase(curr), color: currColor, shape: "circularImage", image: dir + s[0] + "/" + s[1] + ".png" });
             if (id !== 0) {
